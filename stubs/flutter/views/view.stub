@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ui_x/ui_x.dart';
+
+import '/app/modules/{{ module }}/controllers/{{ module }}ViewController.dart';
+import '/app/shared/views/errors/NotConnectedErrorPage.dart';
+import '/app/shared/views/layouts/MasterLayout.dart';
+import '/app/shared/views/widgets/LoadingIconWidget.dart';
+
+class {{ module }}PageView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<{{ module }}ViewController>(
+      init: {{ module }}ViewController(),
+      builder: ({{ module }}ViewController controller) {
+        return !controller.isConnected
+            ? NotConnectedErrorPage()
+            : controller.isBusy
+                ? LoadingIconWidget(message: "Please wait...")
+                : MasterLayout(
+                    title: "View {{ title }}",
+                    body: SafeArea(
+                      child: Container(
+                        child: ListView(
+                          padding: EdgeInsets.all(10),
+                          children: [
+                            {{ fields }}
+                            ButtonBar(
+                              alignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  child: Button(
+                                      key: Key('edit'),
+                                      label: 'Edit',
+                                      onTap: (e){
+                                        Get.toNamed('/{{ route }}/${controller.data?.id.toString() ?? "0"}/edit');
+                                      },
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left:5, top: 10),
+                                  child: Button(
+                                    key: Key('delete'),
+                                    label: 'Delete',
+                                    onTap: (e){
+                                      Get.dialog(Dialog(
+                                        child: Container(
+                                          padding: EdgeInsets.all(20),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(30),
+                                                child: Text("Are you sure you want to delete this item?",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.bold
+                                                    )
+                                                ),
+                                              ),
+                                              ButtonBar(
+                                                children: [
+                                                  Button(
+                                                      key: Key('cancel'),
+                                                      label: 'Cancel',
+                                                      onTap: (e){
+                                                        Get.back();
+                                                      }
+                                                  ),
+                                                  Button(
+                                                      key: Key('delete'),
+                                                      label: 'Delete',
+                                                      onTap: (e) async {
+                                                        await controller.delete();
+                                                      }
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ));
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      ),
+                    ),
+                  );
+      },
+    );
+  }
+}
+

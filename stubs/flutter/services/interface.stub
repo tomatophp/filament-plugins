@@ -1,0 +1,42 @@
+import '/app/models/ApiResponse.dart';
+import '/app/shared/services/Services.dart';
+import 'package:get/get.dart';
+
+import 'App{{ module }}Service.dart';
+import 'Mock{{ module }}Service.dart';
+
+abstract class {{ module }}Service extends BaseService {
+  /// Configure if Mock is enabled or not @accepts[true|false]
+  static const MOCK_ENABLED = false;
+
+  /// Create and get the instance of [{{ module }}Service]
+  static {{ module }}Service get instance {
+    if (!Get.isRegistered<{{ module }}Service>()) Get.lazyPut<{{ module }}Service>(() => MOCK_ENABLED ? Mock{{ module }}Service() : App{{ module }}Service());
+    return Get.find<{{ module }}Service>();
+  }
+
+  /// Start the server request
+  void init(String client);
+
+  /// Stop the server request
+  void close(String client);
+
+  /// Do Something
+  Future<ApiResponse> search(String client, String search);
+
+  /// Do Something
+  Future<ApiResponse> index(String client, String? page);
+
+  /// Do Something
+  Future<ApiResponse> show(String client, String id);
+
+  /// Do Something
+  Future<ApiResponse> store(Map<String, dynamic> body, String client);
+
+  /// Do Something
+  Future<ApiResponse> update(Map<String, dynamic> body, String client, String id);
+
+  /// Do Something
+  Future<ApiResponse> delete(String client, String id);
+}
+

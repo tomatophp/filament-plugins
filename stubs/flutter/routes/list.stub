@@ -1,0 +1,14 @@
+import 'package:get/get.dart';
+
+import '/app/modules/{{ module }}/views/{{ module }}PageIndex.dart';
+import '/app/modules/{{ module }}/views/{{ module }}PageCreate.dart';
+import '/app/modules/{{ module }}/views/{{ module }}PageEdit.dart';
+import '/app/modules/{{ module }}/views/{{ module }}PageView.dart';
+
+List<GetPage> {{ moduleLower }}Routes = [
+  GetPage(name: '/{{ route }}', page: () => {{ module }}PageIndex()),
+  GetPage(name: '/{{ route }}/create', page: () => {{ module }}PageCreate()),
+  GetPage(name: '/{{ route }}/:id', page: () => {{ module }}PageView()),
+  GetPage(name: '/{{ route }}/:id/edit', page: () => {{ module }}PageEdit()),
+];
+

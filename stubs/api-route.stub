@@ -1,0 +1,8 @@
+
+Route::middleware(['auth:sanctum'])->name('api.')->group(function () {
+    Route::get('/{{ table }}', [{{ name }}::class, 'index'])->name('{{ table }}.index');
+    Route::post('/{{ table }}', [{{ name }}::class, 'store'])->name('{{ table }}.store');
+    Route::get('/{{ table }}/{model}', [{{ name }}::class, 'show'])->name('{{ table }}.show');
+    Route::post('/{{ table }}/{model}', [{{ name }}::class, 'update'])->name('{{ table }}.update');
+    Route::delete('/{{ table }}/{model}', [{{ name }}::class, 'destroy'])->name('{{ table }}.destroy');
+});

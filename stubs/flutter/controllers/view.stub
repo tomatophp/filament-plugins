@@ -1,0 +1,67 @@
+import '/app/models/{{ tableUpper }}SingleModel.dart';
+import '/app/models/{{ tableUpper }}Model.dart';
+import 'package:get/get.dart';
+
+import '/app/models/ApiResponse.dart';
+import '/app/models/PaginationModel.dart';
+import '/app/shared/controllers/AppController.dart';
+import '/app/modules/{{ module }}/routes/{{ module }}Routes.dart';
+import '/app/modules/{{ module }}/services/{{ module }}Service.dart';
+import '/app/modules/{{ module }}/controllers/{{ module }}IndexController.dart';
+import '/app/modules/{{ module }}/routes/{{ module }}Routes.dart';
+
+class {{ module }}ViewController extends AppController {
+
+  /// Create and get the instance of the controller
+  static {{ module }}ViewController get instance {
+    if (!Get.isRegistered<{{ module }}ViewController>()) Get.put({{ module }}ViewController());
+    return Get.find<{{ module }}ViewController>();
+  }
+
+  /// Initialise [{{ module }}Module] service
+  final {{ module }}Service _{{ moduleLower }}Service = {{ module }}Service.instance;
+
+  /// Observables
+  final _index = {{ tableUpper }}SingleModel().obs;
+
+  /// Getters
+  {{ tableUpper }}Model? get data => _index.value.data ?? null;
+
+  @override
+  void onInit() {
+    super.onInit();
+    index();
+    _index.refresh();
+  }
+
+  Future<void> index() async {
+    setBusy(true);
+
+    _{{ moduleLower }}Service.init('show');
+
+    ApiResponse response = await _{{ moduleLower }}Service.show('show', Get.parameters['id']!);
+
+    setBusy(false);
+
+    _{{ moduleLower }}Service.close('show');
+
+    {{ tableUpper }}SingleModel data = {{ tableUpper }}SingleModel.fromJson(response.toJson());
+
+    _index.value = data;
+  }
+
+  Future<void> delete() async {
+    _{{ moduleLower }}Service.init('delete');
+
+    await _{{ moduleLower }}Service.delete('delete', Get.parameters['id']!);
+
+    _{{ moduleLower }}Service.close('delete');
+
+    Get.delete<{{ module }}IndexController>();
+
+    Get.offAllNamed({{ module }}Routes.index);
+  }
+
+
+}
+

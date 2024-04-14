@@ -1,0 +1,67 @@
+name: {{ name }}
+description: A flutter project starting point to get started with flutter projects with ease and some awesome built in features.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.5
+  http: ^1.1.0
+  get: ^4.6.5
+  get_storage: ^2.1.1
+  google_fonts: ^6.1.0
+  flutter_svg: ^2.0.7
+  ui_x:
+    path: packages/ui_x
+  connectivity_plus: ^5.0.0
+  feather_icons: ^1.2.0
+  flutter_local_notifications: ^16.1.0
+
+  flutter_localization: ^0.1.14
+  translations_loader: ^1.0.2
+  firebase_messaging: ^14.6.9
+  rxdart: ^0.27.7
+  firebase_in_app_messaging: ^0.7.4+1
+  google_maps_flutter: ^2.5.0
+  geocoding: ^2.1.1
+  geolocator: ^10.0.1
+  google_maps_flutter_web: ^0.5.4+2
+
+#  flutter_local_notifications:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  dcli: ^3.1.0
+  logger: ^2.0.2+1
+  recase: ^4.1.0
+  faker: ^2.1.0
+
+  # Modulr Package to generate Modules
+  modulr:
+    path: packages/flutter_modulr
+
+# Launcher Icon Configs
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+
+# The following section is specific to Flutter.
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/lang/

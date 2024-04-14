@@ -1,0 +1,146 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use TomatoPHP\TomatoAdmin\Facade\Tomato;
+
+class {{ name }} extends Controller
+{
+    public string $model;
+
+    public function __construct()
+    {
+        $this->model = {{ model }}::class;
+    }
+
+    /**
+     * @param Request $request
+     * @return View|JsonResponse
+     */
+    public function index(Request $request): View|JsonResponse
+    {
+        return Tomato::index(
+            request: $request,
+            model: $this->model,
+            view: '{{ modulePath }}{{ table }}.index',
+            table: {{ tableClass }}::class
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function api(Request $request): JsonResponse
+    {
+        return Tomato::json(
+            request: $request,
+            model: {{ model }}::class,
+        );
+    }
+
+    /**
+     * @return View
+     */
+    public function create(): View
+    {
+        return Tomato::create(
+            view: '{{ modulePath }}{{ table }}.create',
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse|JsonResponse
+     */
+    public function store(Request $request): RedirectResponse|JsonResponse
+    {
+        $response = Tomato::store(
+            request: $request,
+            model: {{ model }}::class,
+            validation: [
+                {{ validation }}
+            ],
+            message: __('{{ title }} updated successfully'),
+            redirect: 'admin.{{ table }}.index',
+        );
+
+        if($response instanceof JsonResponse){
+            return $response;
+        }
+
+        return $response->redirect;
+    }
+
+    /**
+     * @param {{ model }} $model
+     * @return View|JsonResponse
+     */
+    public function show({{ model }} $model): View|JsonResponse
+    {
+        return Tomato::get(
+            model: $model,
+            view: '{{ modulePath }}{{ table }}.show',
+        );
+    }
+
+    /**
+     * @param {{ model }} $model
+     * @return View
+     */
+    public function edit({{ model }} $model): View
+    {
+        return Tomato::get(
+            model: $model,
+            view: '{{ modulePath }}{{ table }}.edit',
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param {{ model }} $model
+     * @return RedirectResponse|JsonResponse
+     */
+    public function update(Request $request, {{ model }} $model): RedirectResponse|JsonResponse
+    {
+        $response = Tomato::update(
+            request: $request,
+            model: $model,
+            validation: [
+                {{ validationEdit }}
+            ],
+            message: __('{{ title }} updated successfully'),
+            redirect: 'admin.{{ table }}.index',
+        );
+
+         if($response instanceof JsonResponse){
+             return $response;
+         }
+
+         return $response->redirect;
+    }
+
+    /**
+     * @param {{ model }} $model
+     * @return RedirectResponse|JsonResponse
+     */
+    public function destroy({{ model }} $model): RedirectResponse|JsonResponse
+    {
+        $response = Tomato::destroy(
+            model: $model,
+            message: __('{{ title }} deleted successfully'),
+            redirect: 'admin.{{ table }}.index',
+        );
+
+        if($response instanceof JsonResponse){
+            return $response;
+        }
+
+        return $response->redirect;
+    }
+}

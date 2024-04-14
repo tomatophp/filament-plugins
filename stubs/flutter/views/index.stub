@@ -1,0 +1,193 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ui_x/ui_x.dart';
+
+import '/config/theme/AppTheme.dart';
+import '/app/shared/views/components/SideMenu.dart';
+import '/app/helpers/Global.dart';
+import '/app/shared/views/errors/NotConnectedErrorPage.dart';
+import '/app/shared/views/layouts/MasterLayout.dart';
+import '/app/shared/views/widgets/LoadingIconWidget.dart';
+import '/app/modules/{{ module }}/controllers/{{ module }}ViewController.dart';
+import '/app/modules/{{ module }}/controllers/{{ module }}IndexController.dart';
+
+class {{ module }}PageIndex extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<{{ module }}IndexController>(
+      init: {{ module }}IndexController(),
+      builder: ({{ module }}IndexController controller) {
+        return !controller.isConnected
+            ? NotConnectedErrorPage()
+            : controller.isBusy
+                ? LoadingIconWidget(message: "Please wait...")
+                : MasterLayout(
+                    title: "{{ title }}",
+                    body:  ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(context).copyWith(
+                        physics: const BouncingScrollPhysics(),
+                        dragDevices: {
+                            PointerDeviceKind.touch,
+                            PointerDeviceKind.mouse,
+                            PointerDeviceKind.trackpad
+                          },
+                        ),
+                        child: RefreshIndicator(
+                          displacement: 250,
+                          backgroundColor: Colors.yellow,
+                          color: Colors.red,
+                          strokeWidth: 3,
+                          triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                          onRefresh: () async {
+                            await controller.index();
+                          },
+                          child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                              color: Colors.transparent,
+                              width: double.infinity,
+                              height: screen.height - 55,
+                              child: !controller.data.isEmpty || (controller.searchInput.text.length!=0) ?  Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      // SizedBox(
+                                      //     width: 50,
+                                      //     child: Container(
+                                      //       decoration: BoxDecoration(
+                                      //         border: Border.all(color: Colors.grey, width: 0.4),
+                                      //         borderRadius: BorderRadius.circular(5.0),
+                                      //         shape: BoxShape.rectangle,
+                                      //       ),
+                                      //       child: IconButton(
+                                      //         icon: Icon(Icons.filter_alt_outlined),
+                                      //         hoverColor: Colors.transparent,
+                                      //         onPressed: () {
+                                      //           Get.dialog(
+                                      //             Dialog(
+                                      //               child: Container(
+                                      //                 child: Text('Filters'),
+                                      //               ),
+                                      //             ),
+                                      //           );
+                                      //         },
+                                      //       ),
+                                      //     )
+                                      // ),
+                                      // SizedBox(width: 10),
+                                      Expanded(
+                                          child: Form(
+                                              key: controller.formKey,
+                                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                                              child: Column(
+                                                children: [
+                                                  FormInput.text(
+                                                    controller: controller.searchInput,
+                                                    placeholder: "Search",
+                                                    leading: Icon(Icons.search),
+                                                    onFieldSubmitted: (value){
+                                                      controller.search();
+                                                    },
+                                                  ),
+                                                ],
+                                              )
+                                          )
+                                      )
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(
+                                      child:Container(
+                                        child: NotificationListener(
+                                          onNotification: (notification) {
+                                            if (notification is ScrollEndNotification && notification.metrics.extentAfter == 0) {
+                                              // User has reached the end of the list
+                                              // Load more data or trigger pagination in flutter
+                                              controller.loadMore();
+                                            }
+                                            return false;
+                                          },
+                                          child: ListView.builder(
+                                            itemCount: controller.data.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              return Container(
+                                                height: 100,
+                                                margin: EdgeInsets.only(top: 20),
+                                                decoration: BoxDecoration(
+                                                  color: currentTheme() == ThemeMode.dark ? AppTheme.darkTheme.primaryColorDark : Colors.white70,
+                                                  border: Border.all(
+                                                    color: Colors.transparent,
+                                                  ),
+                                                  borderRadius: BorderRadius.all(Radius.circular(5))
+                                                ),
+                                                padding: EdgeInsets.all(10),
+                                                child: GestureDetector(
+                                                    child: Container(
+                                                      padding: EdgeInsets.all(10),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text('${controller.data[index]['{{ titleField }}']}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: currentTheme() == ThemeMode.dark ? Colors.white : Colors.black)),
+                                                          RichText(
+                                                              overflow: TextOverflow.ellipsis,
+                                                              text: TextSpan(
+                                                                  style: TextStyle(color: currentTheme() == ThemeMode.dark ? Colors.white60 : Colors.black54),
+                                                                  text:'${controller.data[index]['{{ descriptionField }}']}'
+                                                              )
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    onTap: () {
+                                                      Get.delete<{{ module }}ViewController>();
+                                                      Get.toNamed('/{{ route }}/${controller.data[index]['id']}');
+                                                    }
+                                                ),
+
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ): Container(
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.error, size: 50, color: Colors.red),
+                                      SizedBox(height: 20),
+                                      Text("No data found", style: TextStyle(fontSize: 20),),
+                                      SizedBox(height: 20),
+                                      Button(
+                                          key: UniqueKey(),
+                                          label: "Create",
+                                          onTap: (ButtonController btn) {
+                                            Get.toNamed('{{ route }}/create');
+                                          }
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ),
+                    ),
+                    drawer: SideMenu(),
+                    actions: [
+                      IconButton(onPressed: (){
+                        Get.toNamed('{{ route }}/create');
+                      }, icon: Icon(Icons.add))
+                    ],
+                  );
+      },
+    );
+  }
+}
+

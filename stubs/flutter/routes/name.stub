@@ -1,0 +1,7 @@
+class {{ module }}Routes {
+  static String get index => '/{{ table }}';
+  static String get {{ moduleLower }}View => '/{{ table }}/:id';
+  static String get {{ moduleLower }}Create => '/{{ table }}/create';
+  static String get {{ moduleLower }}Edit => '/{{ table }}/:id/edit';
+}
+

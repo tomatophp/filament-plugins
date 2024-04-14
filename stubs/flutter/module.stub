@@ -1,0 +1,23 @@
+///======================
+/// {{ module }} Module
+///======================
+
+/// Controllers
+export "controllers/{{ module }}IndexController.dart";
+export "controllers/{{ module }}CreateController.dart";
+export "controllers/{{ module }}EditController.dart";
+export "controllers/{{ module }}ViewController.dart";
+
+/// Routes
+export "routes/{{ module }}Router.dart";
+export "routes/{{ module }}Routes.dart";
+
+/// Services
+export "services/{{ module }}Service.dart";
+
+/// Pages
+export "views/{{ module }}PageIndex.dart";
+export "views/{{ module }}PageCreate.dart";
+export "views/{{ module }}PageEdit.dart";
+export "views/{{ module }}PageView.dart";
+

@@ -1,0 +1,28 @@
+import '/app/models/{{ tableUpper }}Model.dart';
+
+class {{ tableUpper }}SingleModel {
+  bool? success;
+  String? message;
+  Null? errors;
+  {{ tableUpper }}Model? data;
+
+  {{ tableUpper }}SingleModel({this.success, this.message, this.errors, this.data});
+
+  {{ tableUpper }}SingleModel.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    message = json['message'];
+    errors = json['errors'];
+    data = (json['data'] != null ? new {{ tableUpper }}Model.fromJson(json['data']) : []) as {{ tableUpper }}Model?;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    data['message'] = this.message;
+    data['errors'] = this.errors;
+    if (this.data != null) {
+      data['data'] = this.data;
+    }
+    return data;
+  }
+}

@@ -1,0 +1,11 @@
+
+Route::middleware(['auth', 'splade', 'verified'])->name('admin.')->group(function () {
+    Route::get('admin/{{ table }}', [{{ name }}::class, 'index'])->name('{{ table }}.index');
+    Route::get('admin/{{ table }}/api', [{{ name }}::class, 'api'])->name('{{ table }}.api');
+    Route::get('admin/{{ table }}/create', [{{ name }}::class, 'create'])->name('{{ table }}.create');
+    Route::post('admin/{{ table }}', [{{ name }}::class, 'store'])->name('{{ table }}.store');
+    Route::get('admin/{{ table }}/{model}', [{{ name }}::class, 'show'])->name('{{ table }}.show');
+    Route::get('admin/{{ table }}/{model}/edit', [{{ name }}::class, 'edit'])->name('{{ table }}.edit');
+    Route::post('admin/{{ table }}/{model}', [{{ name }}::class, 'update'])->name('{{ table }}.update');
+    Route::delete('admin/{{ table }}/{model}', [{{ name }}::class, 'destroy'])->name('{{ table }}.destroy');
+});

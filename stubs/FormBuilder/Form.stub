@@ -1,0 +1,3 @@
+<x-tomato-admin-container :label="isset($model) ? __('Edit {{ title }}') . ' #' .$model->id : __('Create {{ title }}')">
+       <x-splade-form :for="$form" />
+</x-tomato-admin-container>

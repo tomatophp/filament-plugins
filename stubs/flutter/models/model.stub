@@ -1,0 +1,21 @@
+class {{ tableUpper }}Model {
+  {{ tableFields }}
+
+  {{ tableUpper }}Model({
+    {{ tableThis }}
+  });
+
+  {{ tableUpper }}Model.fromJson(Map<String, dynamic> json) {
+    {{ tableJson }}
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    {{ tableData }}
+
+    return data;
+  }
+}
+
+{{ modelMore }}

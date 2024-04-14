@@ -1,0 +1,56 @@
+import '/app/helpers/Request.dart';
+import '/app/models/ApiResponse.dart';
+import '/app/shared/services/Services.dart';
+import '{{ module }}Service.dart';
+
+class App{{ module }}Service extends BaseService  implements {{ module }}Service {
+  late Request _request;
+  App{{ module }}Service() {
+    _request = new Request();
+  }
+
+  /// Start the server request
+  @override
+  void init(String client) => _request.start(client);
+
+  /// Stop the server request
+  @override
+  void close(String client) => _request.close(client);
+
+  @override
+  Future<ApiResponse> search(String client, String search) async {
+    return await _request.get('/{{ route }}?search='+search, client: client, authenticate: true);
+  }
+
+  @override
+  Future<ApiResponse> index(String client, String? page) async {
+    var getPage = page ?? "1";
+    if(int.parse(getPage) > 1){
+      return await _request.get('/{{ route }}?page='+getPage, client: client, authenticate: true);
+    }
+    else {
+      return await _request.get('/{{ route }}', client: client, authenticate: true);
+    }
+  }
+
+  @override
+  Future<ApiResponse> show(String client, String id) async {
+    return await _request.get('/{{ route }}/'+id, client: client, authenticate: true);
+  }
+
+  @override
+  Future<ApiResponse> store(Map<String, dynamic> body, String client) async {
+    return await _request.post('/{{ route }}',body: body ,client: client, authenticate: true);
+  }
+
+  @override
+  Future<ApiResponse> update(Map<String, dynamic> body, String client, String id) async {
+    return await _request.post('/{{ route }}/'+id,body: body ,client: client, authenticate: true);
+  }
+
+  @override
+  Future<ApiResponse> delete(String client, String id) async {
+    return await _request.delete('/{{ route }}/'+id,body: [], client: client, authenticate: true);
+  }
+}
+

@@ -1,0 +1,7 @@
+        \TomatoPHP\TomatoAdmin\Facade\TomatoMenu::register([
+            \TomatoPHP\TomatoAdmin\Services\Contracts\Menu::make()
+                ->group('{{ moduleName }}')
+                ->label('{{ title }}')
+                ->icon('bx bx-circle')
+                ->route('admin.{{ tableName }}.index'),
+        ]);

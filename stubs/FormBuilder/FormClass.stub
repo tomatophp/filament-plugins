@@ -1,0 +1,35 @@
+<?php
+
+namespace {{ namespace }};
+use ProtoneMedia\Splade\FormBuilder\Submit;
+use Illuminate\Database\Eloquent\Model;
+use ProtoneMedia\Splade\SpladeForm;
+use ProtoneMedia\Splade\AbstractForm;
+
+
+class {{ name }} extends AbstractForm
+{
+      public static Model|array $model=[];
+      public static string $route="admin.{{ route }}.store";
+
+      public function configure(SpladeForm $form)
+      {
+
+              $form
+              ->action(route(self::$route,self::$model))
+              ->method('POST')
+              ->class('space-y-4')
+              ->fill(self::$model);
+
+      }
+
+      public function fields(): array
+      {
+          return [
+              {{ cols }}
+              Submit::make()
+                  ->label(__('Save')),
+          ];
+      }
+
+}

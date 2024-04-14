@@ -1,0 +1,74 @@
+import '/app/modules/{{ module }}/{{ module }}Module.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ui_x/helpers/Toastr.dart';
+
+import '/app/models/ApiResponse.dart';
+import '/app/models/PaginationModel.dart';
+import '/app/shared/controllers/AppController.dart';
+import '/app/shared/views/errors/ErrorPage.dart';
+import '/app/modules/{{ module }}/services/{{ module }}Service.dart';
+import '/app/modules/{{ module }}/controllers/{{ module }}IndexController.dart';
+import '/app/modules/{{ module }}/routes/{{ module }}Routes.dart';
+
+class {{ module }}CreateController extends AppController {
+
+  /// Create and get the instance of the controller
+  static {{ module }}CreateController get instance {
+    if (!Get.isRegistered<{{ module }}CreateController>()) Get.replace({{ module }}CreateController());
+    return Get.find<{{ module }}CreateController>();
+  }
+
+  /// Initialise [{{ module }}Module] service
+  final {{ module }}Service _{{ moduleLower }}Service = {{ module }}Service.instance;
+
+  /// Inputs
+  GlobalKey<FormState> formKey = GlobalKey<FormState>(debugLabel: 'create{{ tableUpper }}');
+  {{ fields }}
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  Future<void> store() async {
+    String _client = "store{{ tableUpper }}";
+    if (!formKey.currentState!.validate()) {
+      Toastr.show(message: "Please fill all the required fields!");
+      return;
+    }
+
+    try {
+      /// Prepare form data to be sent to server
+      Map<String, dynamic> body = {
+        {{ jsonFields }}
+      };
+
+      /// Initialize the Service and request server
+      _{{ moduleLower }}Service.init(_client);
+
+      /// Call api to login user
+      ApiResponse response = await _{{ moduleLower }}Service.store(body, _client);
+
+      if (response.hasError() || response.hasValidationErrors()) {
+        Toastr.show(message: "${response.message}");
+        return;
+      }
+
+      Get.delete<{{ module }}IndexController>();
+
+      Toastr.show(message: "${response.message}");
+
+      /// Close the Service and request server
+      _{{ moduleLower }}Service.close(_client);
+
+      formKey.currentState?.reset();
+
+      /// Redirect user
+      Get.offAllNamed({{ module }}Routes.index);
+    } on Exception catch (e) {
+      Get.to(() => ErrorPage(message: "${e.toString()}"));
+    }
+  }
+}
+

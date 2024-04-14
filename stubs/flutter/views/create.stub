@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ui_x/ui_x.dart';
+
+import '/app/modules/{{ module }}/controllers/{{ module }}CreateController.dart';
+import '/app/shared/views/errors/NotConnectedErrorPage.dart';
+import '/app/shared/views/layouts/MasterLayout.dart';
+import '/app/shared/views/widgets/LoadingIconWidget.dart';
+
+class {{ module }}PageCreate extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<{{ module }}CreateController>(
+      init: {{ module }}CreateController(),
+      builder: ({{ module }}CreateController controller) {
+        return !controller.isConnected
+            ? NotConnectedErrorPage()
+            : controller.isBusy
+                ? LoadingIconWidget(message: "Please wait...")
+                : MasterLayout(
+                    title: "Create {{ title }}",
+                    body: SafeArea(
+                      child: SingleChildScrollView(
+                        child: GestureDetector(
+                          onTap: () => Keyboard.hide(context),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                            color: Colors.transparent,
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Form(
+                                  key: controller.formKey,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  child: Column(
+                                    children: [
+                                      {{ fields }}
+                                      Button.block(
+                                        key: UniqueKey(),
+                                        label: "Save",
+                                        onTap: (ButtonController btn) async {
+                                          btn.setBusy(true).setDisabled(true);
+                                          await controller.store();
+                                          btn.setBusy(false).setDisabled(false);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+      },
+    );
+  }
+}
+

@@ -1,0 +1,43 @@
+import '/app/models/ApiResponse.dart';
+import '/app/shared/services/Services.dart';
+import '{{ module }}Service.dart';
+
+class Mock{{ module }}Service extends BaseService implements {{ module }}Service {
+  @override
+  void init(String client) => null;
+
+  /// Stop the server request
+  @override
+  void close(String client) => null;
+
+  @override
+  Future<ApiResponse> search(String client, String search) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResponse> index(String client, String?  page) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResponse> show(String client, String id) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResponse> store(Map<String, dynamic> body, String client) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResponse> update(Map<String, dynamic> body, String client, String id) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResponse> delete(String client, String id) async {
+    throw UnimplementedError();
+  }
+}
+

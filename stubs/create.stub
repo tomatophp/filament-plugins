@@ -1,0 +1,10 @@
+<x-tomato-admin-container label="{{trans('tomato-admin::global.crud.create')}} {{__('{{ title }}')}}">
+    <x-splade-form class="flex flex-col space-y-4" action="{{route('admin.{{ table }}.store')}}" method="post">
+        {{ cols }}
+
+        <div class="flex justify-start gap-2 pt-3">
+            <x-tomato-admin-submit  label="{{__('Save')}}" :spinner="true" />
+            <x-tomato-admin-button secondary :href="route('admin.{{ table }}.index')" label="{{__('Cancel')}}"/>
+        </div>
+    </x-splade-form>
+</x-tomato-admin-container>
