@@ -5,7 +5,11 @@
     "keywords": [
         "php",
         "laravel",
-        "template"
+        "template",
+        "modules",
+        "HMVC",
+        "filament",
+        "plugins"
     ],
     "license": "MIT",
     "autoload": {
