@@ -1,6 +1,6 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services\Concerns\Flutter;
+namespace TomatoPHP\FilamentPlugins\Services\Concerns\Flutter;
 
 use Illuminate\Support\Str;
 

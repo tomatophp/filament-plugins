@@ -1,16 +1,17 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services;
+namespace TomatoPHP\FilamentPlugins\Services;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use TomatoPHP\ConsoleHelpers\Traits\HandleFiles;
 use TomatoPHP\ConsoleHelpers\Traits\HandleStub;
-use TomatoPHP\TomatoPlugins\Services\Traits\MoveFiles;
+use TomatoPHP\FilamentPlugins\Services\Traits\GeneratePage;
+use TomatoPHP\FilamentPlugins\Services\Traits\MoveFiles;
 use TomatoPHP\TomatoSettings\Settings\ThemesSettings;
-use TomatoPHP\TomatoPlugins\Services\Traits\GenerateInfo;
-use TomatoPHP\TomatoPlugins\Services\Traits\GenerateModule;
-use TomatoPHP\TomatoPlugins\Services\Traits\GenerateReadMe;
+use TomatoPHP\FilamentPlugins\Services\Traits\GenerateInfo;
+use TomatoPHP\FilamentPlugins\Services\Traits\GenerateModule;
+use TomatoPHP\FilamentPlugins\Services\Traits\GenerateReadMe;
 
 class PluginGenerator
 {
@@ -19,6 +20,7 @@ class PluginGenerator
     use GenerateInfo;
     use GenerateReadMe;
     use GenerateModule;
+    use GeneratePage;
     use MoveFiles;
 
     public function __construct(
@@ -45,5 +47,6 @@ class PluginGenerator
         $this->generateReadMe();
         $this->generateInfo();
         $this->moveFiles();
+        $this->generatePage();
     }
 }

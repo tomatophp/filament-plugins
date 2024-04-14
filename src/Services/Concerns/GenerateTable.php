@@ -1,9 +1,9 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services\Concerns;
+namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
 use Illuminate\Support\Str;
-use TomatoPHP\TomatoPlugins\Models\TableCol;
+use TomatoPHP\FilamentPlugins\Models\TableCol;
 
 trait GenerateTable
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services\Concerns;
+namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
 use Illuminate\Support\Str;
 use ProtoneMedia\Splade\FormBuilder\Text;

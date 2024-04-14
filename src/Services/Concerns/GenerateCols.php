@@ -1,24 +1,35 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services\Concerns;
+namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use TomatoPHP\FilamentPlugins\Models\Table;
+use TomatoPHP\FilamentPlugins\Models\TableCol;
 
 trait GenerateCols
 {
+    private function get_string_between( $string, $start, $end ){
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
+    }
+
     private function getCols(): array
     {
         $components = [];
 
-        $this->connection->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-        $tableSchema = $this->connection->getSchemaManager();
-        $columns = $tableSchema->listTableDetails($this->tableName);
+        $columns = collect(Schema::getColumns($this->tableName));
+        $keys = collect(Schema::getForeignKeys($this->tableName));
+        $indexs = collect(Schema::getIndexes($this->tableName));
 
         $types=[];
 
-        foreach ($columns->getColumns() as $column) {
-
-            if (Str::of($column->getName())->endsWith([
+        foreach ($columns as $column) {
+            if (Str::of($column['name'])->endsWith([
                 'created_at',
                 'updated_at',
                 'deleted_at',
@@ -29,82 +40,73 @@ trait GenerateCols
 
             $componentData = [];
 
-            $componentData['name'] = $column->getName();
-            $componentData['type']=$column->getType()->getName();
-            $componentData['default']=$column->getDefault();
+            $componentData['name'] = $column['name'];
+            $componentData['type']=$column['type_name'] === 'varchar' ? 'string' : $column['type_name'];
+            $componentData['default']=$column['default'];
+            $componentData['unique'] = $indexs->where('name', $this->tableName . '_' . $column['name'] . '_unique')->first() ? true : false;
 
-
-            $uniqueName = $this->tableName . '_' . $column->getName() . '_unique';
-            if ($columns->hasIndex($uniqueName)) {
-                $componentData['unique'] = true;
-            } else {
-                $componentData['unique'] = false;
-            }
 
             if ($componentData['type'] === "string") {
-
-                if (Str::of($column->getName())->contains(['email'])) {
+                if (Str::of($column['name'])->contains(['email'])) {
                     $componentData['type'] = "email";
                 }
 
-                if (Str::of($column->getName())->contains(['password'])) {
+                if (Str::of($column['name'])->contains(['password'])) {
                     $componentData['type'] = "password";
                 }
 
-                if (Str::of($column->getName())->contains(['phone', 'tel'])) {
+                if (Str::of($column['name'])->contains(['phone', 'tel'])) {
                     $componentData['type'] = "tel";
                 }
 
-                if (Str::of($column->getName())->contains(['color'])) {
+                if (Str::of($column['name'])->contains(['color'])) {
                     $componentData['type'] = "color";
                 }
 
-                if (Str::of($column->getName())->contains(['icon'])) {
+                if (Str::of($column['name'])->contains(['icon'])) {
                     $componentData['type'] = "icon";
                 }
             }
             if ($componentData['type'] === "integer" || $componentData['type'] === "float" || $componentData['type'] === "double") {
                 $componentData['type'] = "int";
             }
-
-            if (Str::of($column->getName())->endsWith([
-                '_id'
-            ]))
-            {
-
-                if ($columns->hasForeignKey($this->tableName . '_' . $column->getName() . '_foreign')) {
-                    $getKey = $columns->getForeignKey($this->tableName . '_' . $column->getName() . '_foreign');
-                    $model = "\\Modules\\" . $this->moduleName . "\\Entities\\" . Str::studly(Str::singular($getKey->getForeignTableName()));
-                    $componentData['relation'] = [
-                        "table" => $getKey->getForeignTableName(),
-                        "field" => $getKey->getForeignColumns()[0],
-                        "model" => $model,
-                        'relationColumn'=>'id',
-                        'relationColumnType'=>'text'
-                    ];
-
-                    $relationTableColumns=\Illuminate\Support\Facades\Schema::getColumnListing($componentData['relation']['table']);
-                    if (array_search('name',$relationTableColumns))
-                        $componentData['relation']['relationColumn']='name';
-                    elseif (array_search('title',$relationTableColumns))
-                        $componentData['relation']['relationColumn']='title';
-
-                    try {
-                        $componentData['relation']['relationColumnType']=\Illuminate\Support\Facades\Schema::getColumnType($componentData['relation']['table'],$componentData['relation']['relationColumn']);
-                    }catch (\Exception $e) {}
-
-                    $componentData['type'] = 'relation';
-                }
+            if ($componentData['type'] === "tinyint") {
+                $componentData['type'] = "boolean";
             }
 
-            if ($column->getNotnull()) {
+            $hasForgenKey = $keys->where('name',$this->tableName . '_' . $column['name'] . '_foreign')->first();
+            if ($hasForgenKey) {
+                $getKey = $hasForgenKey;
+                $model = "\\Modules\\" . $this->moduleName . "\\App\\Models\\" . Str::studly(Str::singular($getKey['foreign_table']));
+                $componentData['relation'] = [
+                    "table" => $getKey['foreign_table'],
+                    "field" => $getKey['foreign_columns'][0],
+                    "model" => $model,
+                    'relationColumn'=>$getKey['foreign_columns'][0],
+                    'relationColumnType'=>'text'
+                ];
+
+                $relationTableColumns=Schema::getColumnListing($componentData['relation']['table']);
+                if (array_search('name',$relationTableColumns))
+                    $componentData['relation']['relationColumn']='name';
+                elseif (array_search('title',$relationTableColumns))
+                    $componentData['relation']['relationColumn']='title';
+
+                try {
+                    $componentData['relation']['relationColumnType']=Schema::getColumnType($componentData['relation']['table'],$componentData['relation']['relationColumn']);
+                }catch (\Exception $e) {}
+
+                $componentData['type'] = 'relation';
+            }
+
+            if ($column['nullable']) {
                 $componentData['required'] = 'required';
             } else {
                 $componentData['required'] = 'nullable';
             }
 
-
-            if ($length = $column->getLength()) {
+            $length = (int)$this->get_string_between($column['type'], '(', ')');
+            if ($length) {
                 if ($length > 255) {
                     $componentData['type'] = 'textarea';
                 }
@@ -113,14 +115,47 @@ trait GenerateCols
                 $componentData['maxLength'] = false;
             }
 
-            if($column->getLength() < 1 && $componentData['type'] === 'text'){
+            if($length < 1 && $componentData['type'] === 'text'){
                 $componentData['type'] = 'longText';
             }
 
             $components[] = $componentData;
         }
 
-//        dd($components);
+        $checkifTableExists = Table::where('name', $this->tableName)->first();
+        if(!$checkifTableExists){
+            $table = new Table();
+            $table->module = $this->moduleName;
+            $table->name = $this->tableName;
+            $table->timestamps = $columns->where('name', 'created_at')->count() > 0;
+            $table->soft_deletes = $columns->where('name', 'deleted_at')->count() > 0;
+            $table->migrated = true;
+            $table->save();
+
+            foreach ($components as $component){
+                $tableCol = new TableCol();
+                $tableCol->table_id = $table->id;
+                $tableCol->name = $component['name'];
+                $tableCol->type = $component['type'];
+                $tableCol->length = $component['maxLength'];
+                $tableCol->unique = $component['unique'];
+                $tableCol->default = $component['default'];
+                if($component['type'] === 'relation'){
+                    $tableCol->foreign = true;
+                    $tableCol->foreign_table = $component['relation']['table'];
+                    $tableCol->foreign_col = $component['relation']['field'];
+                    $tableCol->foreign_model = $component['relation']['model'];
+                    $tableCol->foreign_on_delete_cascade = false;
+                }
+                $tableCol->nullable = !$component['required'];
+                $tableCol->save();
+            }
+
+        }
+        else {
+            $this->table = $checkifTableExists;
+        }
+
         return $components;
     }
 }

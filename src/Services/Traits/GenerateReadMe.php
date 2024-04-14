@@ -1,6 +1,6 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services\Traits;
+namespace TomatoPHP\FilamentPlugins\Services\Traits;
 
 use Illuminate\Support\Str;
 

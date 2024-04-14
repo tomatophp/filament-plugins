@@ -1,6 +1,6 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services\Traits;
+namespace TomatoPHP\FilamentPlugins\Services\Traits;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -28,11 +28,18 @@ trait GenerateInfo
             $module->description['sp'] = $this->description;
             $module->color = $this->color;
             $module->icon = $this->icon;
+            $module->pages = [
+                "Modules\\".$this->name."\\Pages\\".$this->name."Page"
+            ];
+            $module->resources = [];
+            $module->widgets = [];
             $module->placeholder = "placeholder.webp";
             $module->type = "plugin";
             $module->version = "v1.0";
 
             File::put($modulePath, json_encode($module, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+
+            Module::find($this->name)->disable();
         }
     }
 }

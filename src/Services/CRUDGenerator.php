@@ -1,6 +1,6 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services;
+namespace TomatoPHP\FilamentPlugins\Services;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -8,34 +8,35 @@ use Doctrine\DBAL\Exception;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use TomatoPHP\TomatoPHP\Services\Generator\Concerns\GenerateCasts;
-use TomatoPHP\TomatoPHP\Services\Generator\Concerns\InjectString;
-use TomatoPHP\TomatoPlugins\Models\Table;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateJsonResource;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateMenus;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateMigrations;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateRules;
-use TomatoPHP\TomatoPlugins\Settings\BuilderSettings;
+use TomatoPHP\FilamentPlugins\Models\Table;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateCasts;
+use TomatoPHP\FilamentPlugins\Services\Concerns\InjectString;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateJsonResource;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateMenus;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateMigrations;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateRules;
+use TomatoPHP\FilamentPlugins\Settings\BuilderSettings;
 use TomatoPHP\ConsoleHelpers\Traits\HandleStub;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateCols;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateController;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateCreateView;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateEditView;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateFolders;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateForm;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateFormView;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateIndexView;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateModel;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateRoutes;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateShowView;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateTable;
-use TomatoPHP\TomatoPlugins\Services\Concerns\GenerateRequest;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateCols;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateController;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateCreateView;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateEditView;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateFolders;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateForm;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateFormView;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateIndexView;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateModel;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateRoutes;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateShowView;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateTable;
+use TomatoPHP\FilamentPlugins\Services\Concerns\GenerateRequest;
 use TomatoPHP\TomatoForms\Models\Form;
 
 class CRUDGenerator
 {
     private string $modelName;
     private string $stubPath;
+    private array $cols=[];
 
     //Handler
     use HandleStub;
@@ -47,7 +48,6 @@ class CRUDGenerator
     use GenerateMigrations;
     use GenerateCols;
     use GenerateModel;
-    use GenerateCasts;
     use GenerateTable;
     use GenerateRules;
     use GenerateController;
@@ -75,7 +75,7 @@ class CRUDGenerator
      * @throws Exception
      */
     public function __construct(
-        private Table $table,
+        private ?Table $table = null,
         private string | null $tableName = null,
         private string | bool | null $moduleName = null,
         private bool $isBuilder = false,
@@ -92,20 +92,16 @@ class CRUDGenerator
         private bool $json  = false,
         private bool $menu  = false,
     ){
-        $this->tableName = $this->table->name;
-        $this->moduleName = $this->table->module;
+        if(!$this->tableName){
+            $this->tableName = $this->table->name;
 
-        $connectionParams = [
-            'dbname' => config('database.connections.mysql.database'),
-            'user' => config('database.connections.mysql.username'),
-            'password' => config('database.connections.mysql.password'),
-            'host' => config('database.connections.mysql.host'),
-            'driver' => 'pdo_mysql',
-        ];
-
-        $this->connection = DriverManager::getConnection($connectionParams);
+        }
+        if(!$this->moduleName){
+            $this->moduleName = $this->table->module;
+        }
         $this->modelName = Str::ucfirst(Str::singular(Str::camel($this->tableName)));
-        $this->stubPath = base_path('vendor/tomatophp/tomato-plugins/stubs') . "/";
+        $this->stubPath = base_path('vendor/tomatophp/filament-plugins/stubs') . "/";
+        $this->cols = $this->getCols();
     }
 
     /**
@@ -121,7 +117,6 @@ class CRUDGenerator
             sleep(3);
             if($this->models){
                 $this->generateModel();
-                $this->generateCasts();
             }
             if($this->tables){
                 $this->generateTable();
@@ -131,9 +126,11 @@ class CRUDGenerator
             }
             else if($this->request){
                 $this->generateRequest();
-                $this->generateControllerForRequest();
+                if($this->controllers){
+                    $this->generateControllerForRequest();
+                }
             }
-            else {
+            else if($this->controllers && (!$this->request) && (!$this->isBuilder)){
                 $this->generateController();
             }
 
@@ -165,5 +162,6 @@ class CRUDGenerator
         }
 
     }
+
 
 }

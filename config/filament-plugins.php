@@ -7,5 +7,8 @@ return [
     "allow_destroy" => true,
     "allow_toggle" => true,
     "allow_generator" => true,
+    "clusters" => [
+        "enabled" => true
+    ]
 ];
 

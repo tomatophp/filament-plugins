@@ -37,11 +37,8 @@ class FilamentPluginsInstall extends Command
     public function handle()
     {
         $this->info('Publish Vendor Assets');
-        $this->callSilent('optimize:clear');
-        $this->yarnCommand(['install']);
-        $this->yarnCommand(['build']);
         $this->artisanCommand(["migrate"]);
         $this->artisanCommand(["optimize:clear"]);
-        $this->info('filamentPlugins installed successfully.');
+        $this->info('Filament Plugins installed successfully.');
     }
 }

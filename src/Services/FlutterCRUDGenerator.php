@@ -1,21 +1,21 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services;
+namespace TomatoPHP\FilamentPlugins\Services;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GenerateCols;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GenerateConfig;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GenerateCols;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GenerateConfig;
 use TomatoPHP\ConsoleHelpers\Traits\HandleStub;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GenerateModel;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GenerateModule;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GeneratePages;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GenerateRoutes;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GenerateServices;
-use TomatoPHP\TomatoPlugins\Services\Concerns\Flutter\GenerateControllers;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GenerateModel;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GenerateModule;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GeneratePages;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GenerateRoutes;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GenerateServices;
+use TomatoPHP\FilamentPlugins\Services\Concerns\Flutter\GenerateControllers;
 
 class FlutterCRUDGenerator
 {

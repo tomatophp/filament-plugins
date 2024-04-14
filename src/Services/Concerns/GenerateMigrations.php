@@ -1,6 +1,6 @@
 <?php
 
-namespace TomatoPHP\TomatoPlugins\Services\Concerns;
+namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -46,6 +46,9 @@ trait GenerateMigrations
     {
         $finalFields = "";
         foreach ($fields as $key=>$field){
+            if($field->name === 'created_at' || $field->name === 'updated_at' || $field->name === 'deleted_at'){
+                continue;
+            }
             $empty = false;
             if($key !== 0){
                 $finalFields .= "            ";
@@ -79,12 +82,7 @@ trait GenerateMigrations
                 $finalFields .= "->nullable()";
             }
 
-            if(isset($field->foreign) && $field->foreign){
-                $finalFields .= "->references('".$field->foreign_col."')->on('".$field->foreign_table."')";
-                if($field->foreign_on_delete_cascade){
-                    $finalFields .= "->onDelete('cascade')";
-                }
-            }
+
             if(isset($field->unique) && $field->unique){
                 $finalFields .= "->unique()";
             }
@@ -103,6 +101,13 @@ trait GenerateMigrations
 
             if(isset($field->index) && $field->index){
                 $finalFields .= "->index()";
+            }
+
+            if(isset($field->foreign) && $field->foreign){
+                $finalFields .= "->references('".$field->foreign_col."')->on('".$field->foreign_table."')";
+                if($field->foreign_on_delete_cascade){
+                    $finalFields .= "->onDelete('cascade')";
+                }
             }
 
             if(!$empty){

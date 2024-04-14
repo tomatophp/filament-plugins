@@ -1,0 +1,24 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ {{ docblock }}
+ */
+class {{ name }} extends Model
+{
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        {{ fillable }}
+    ];
+
+    {{ casts }}
+
+    {{ hidden }}
+
+    {{ methods }}
+}

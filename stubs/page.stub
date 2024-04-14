@@ -1,0 +1,18 @@
+<?php
+
+namespace {{ namespace }};
+
+use Filament\Pages\Page;
+
+class {{ name }} extends Page
+{
+    public static string $view = '{{ view }}';
+    public static ?string $navigationGroup = '{{ title }}';
+    public static ?string $navigationLabel = '{{ title }}';
+    public static ?string $navigationIcon = '{{ icon }}';
+
+    public function getTitle(): string
+    {
+        return '{{ title }}';
+    }
+}
