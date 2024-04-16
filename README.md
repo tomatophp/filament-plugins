@@ -1,16 +1,21 @@
-![Screenshot](./arts/screenshot.png)
+![Screenshot](https://github.com/tomatophp/filament-plugins/blob/master/arts/3x1io-tomato-plugins.jpg)
 
 # Filament plugins
+
+[![Latest Stable Version](https://poser.pugx.org/tomatophp/filament-plugins/version.svg)](https://packagist.org/packages/tomatophp/filament-plugins)
+[![PHP Version Require](http://poser.pugx.org/tomatophp/filament-plugins/require/php)](https://packagist.org/packages/tomatophp/filament-plugins)
+[![License](https://poser.pugx.org/tomatophp/filament-plugins/license.svg)](https://packagist.org/packages/tomatophp/filament-plugins)
+[![Downloads](https://poser.pugx.org/tomatophp/filament-plugins/d/total.svg)](https://packagist.org/packages/tomatophp/filament-plugins)
 
 Manage your modules as a plugin system with plugin generator
 
 ## Screenshots
 
-![Plugins](./arts/plugins.png)
-![Tables](./arts/tables.png)
-![Generate](./arts/generate.png)
-![Create Col](./arts/create-col.png)
-![Table cols](./arts/table-cols.png)
+![Plugins](https://github.com/tomatophp/filament-plugins/blob/master/arts/plugins.png)
+![Tables](https://github.com/tomatophp/filament-plugins/blob/master/arts/tables.png)
+![Generate](https://github.com/tomatophp/filament-plugins/blob/master/arts/generate.png)
+![Create Col](https://github.com/tomatophp/filament-plugins/blob/master/arts/create-col.png)
+![Table cols](https://github.com/tomatophp/filament-plugins/blob/master/arts/table-cols.png)
 
 ## Installation
 
