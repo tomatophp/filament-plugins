@@ -32,12 +32,16 @@ class Plugins extends Page implements HasTable
     protected $listeners = ['pluginRefresh' => '$refresh'];
 
     public static ?string $navigationIcon = 'heroicon-o-squares-plus';
-    public static ?string $navigationGroup = 'Settings';
     public static string $view = 'filament-plugins::pages.plugins';
 
     public function getTitle(): string
     {
-        return 'Plugins';
+        return __('Plugins');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Settings');
     }
 
     public function table(Table $table): Table
@@ -58,7 +62,7 @@ class Plugins extends Page implements HasTable
             ->iconButton()
             ->icon('heroicon-s-x-circle')
             ->color('danger')
-            ->tooltip('Disable')
+            ->tooltip(__('Disable'))
             ->requiresConfirmation()
             ->action(function (array $arguments) {
                 $module = Module::find($arguments['item']['module_name']);
@@ -80,7 +84,7 @@ class Plugins extends Page implements HasTable
             ->iconButton()
             ->icon('heroicon-s-trash')
             ->color('danger')
-            ->tooltip('Delete')
+            ->tooltip(__('Delete'))
             ->requiresConfirmation()
             ->action(function (array $arguments) {
                 $module = Module::find($arguments['item']['module_name']);
@@ -102,7 +106,7 @@ class Plugins extends Page implements HasTable
         return Action::make('active')
             ->iconButton()
             ->icon('heroicon-s-check-circle')
-            ->tooltip('Active')
+            ->tooltip(__('Active'))
             ->color('success')
             ->requiresConfirmation()
             ->action(function (array $arguments) {
@@ -133,27 +137,34 @@ class Plugins extends Page implements HasTable
         if((bool)config('filament-plugins.allow_create')){
             return [
                 Action::make('create')
-                    ->label('Create Plugin')
+                    ->label(
+                    __('Create Plugin'))
                     ->icon('heroicon-o-plus')
                     ->form([
                         TextInput::make('name')
-                            ->label('Plugin Name')
-                            ->placeholder('e.g. My Plugin')
+                            ->label(
+                        __('Plugin Name'))
+                            ->placeholder(
+                        __('e.g. My Plugin'))
                             ->required(),
                         Textarea::make('description')
-                            ->label('Description')
-                            ->placeholder('e.g. A simple plugin for Filament')
+                            ->label(
+                        __('Description'))
+                            ->placeholder(
+                        __('e.g. A simple plugin for Filament'))
                             ->required(),
                         ColorPicker::make('color')->required(),
                         IconPicker::make('icon')->required()
                     ])
                     ->action(fn (array $data) => $this->createPlugin($data)),
                 Action::make('import')
-                    ->label('Import Plugin')
+                    ->label(
+                    __('Import Plugin'))
                     ->icon('heroicon-o-arrow-up-on-square')
                     ->form([
                         FileUpload::make('file')
-                            ->label('Plugin File')
+                            ->label(
+                        __('Plugin File'))
                             ->acceptedFileTypes(['application/zip'])
                             ->required()
                             ->storeFiles(false)

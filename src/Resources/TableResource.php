@@ -73,20 +73,22 @@ class TableResource extends Resource
                 Tables\Actions\DeleteAction::make()->iconButton(),
                 Tables\Actions\Action::make('migrate')
                     ->requiresConfirmation()
-                    ->tooltip('Migrate')
+                    ->tooltip(
+                __('Migrate'))
                     ->color('info')
                     ->iconButton()
                     ->icon('heroicon-s-circle-stack')
                     ->action(function (TableModel $record){
                         $record->migrate();
                         Notification::make()
-                            ->title('Migrated')
-                            ->body('Table migrated successfully.')
+                            ->title(__('Migrated'))
+                            ->body(__('Table migrated successfully.'))
                             ->success()
                             ->send();
                     }),
                 Tables\Actions\Action::make('generate')
-                    ->tooltip('Generate')
+                    ->tooltip(
+                __('Generate'))
                     ->color('info')
                     ->iconButton()
                     ->icon('heroicon-s-home-modern')
@@ -111,8 +113,8 @@ class TableResource extends Resource
                     ->action(function (TableModel $record, array $data){
                         if((!Schema::hasTable($record->name)) && $data['type'] !== 'migrate'){
                             Notification::make()
-                                ->title('Error')
-                                ->body('Table does not exist please run migrate.')
+                                ->title(__('Error'))
+                                ->body(__('Table does not exist please run migrate.'))
                                 ->danger()
                                 ->send();
                             return;
@@ -126,8 +128,8 @@ class TableResource extends Resource
                             sleep(1);
 
                             Notification::make()
-                                ->title('Migrated')
-                                ->body('Table migrated successfully.')
+                                ->title(__('Migrated'))
+                                ->body(__('Table migrated successfully.'))
                                 ->success()
                                 ->send();
                             return;
@@ -138,8 +140,8 @@ class TableResource extends Resource
 
                         if((!$checkIfModelExists) && in_array($data['type'], ['resource', 'page', 'widget'])){
                             Notification::make()
-                                ->title('Error')
-                                ->body('Model does not exist please generate model first.')
+                                ->title(__('Error'))
+                                ->body(__('Model does not exist please generate model first.'))
                                 ->danger()
                                 ->send();
                             return;
@@ -180,8 +182,8 @@ class TableResource extends Resource
                         $generator->generate();
 
                         Notification::make()
-                            ->title('Generated')
-                            ->body('Table generated successfully.')
+                            ->title(__('Generated'))
+                            ->body(__('Table generated successfully.'))
                             ->success()
                             ->send();
                     }),

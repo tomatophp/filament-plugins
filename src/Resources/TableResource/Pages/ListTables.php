@@ -15,7 +15,8 @@ class ListTables extends ListRecords
     {
         return [
             Actions\Action::make('create')
-                ->label('Create Table')
+                ->label(
+                __('Create Table'))
                 ->url(route('filament.'.filament()->getCurrentPanel()->getId().'.resources.tables.create', ['module' => request()->get('module')]))
         ];
     }

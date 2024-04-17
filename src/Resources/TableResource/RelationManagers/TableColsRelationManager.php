@@ -64,29 +64,27 @@ class TableColsRelationManager extends RelationManager
                 Forms\Components\Toggle::make('unique'),
                 Forms\Components\Toggle::make('index'),
                 Forms\Components\Toggle::make('foreign')
-                    ->afterStateUpdated(function(Forms\Set $set, Forms\Get $get) {
-                        if($get('foreign') === true) {
+                    ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get) {
+                        if ($get('foreign') === true) {
                             $set('type', 'bigint');
                             $set('unsigned', true);
-                        }
-                        else {
+                        } else {
                             $set('type', null);
                             $set('unsigned', false);
                         }
-
                     })
                     ->live(),
                 Forms\Components\TextInput::make('foreign_table')
                     ->required()
                     ->columnSpan(2)
-                    ->hidden(fn(Forms\Get $get) => !$get('foreign')),
+                    ->hidden(fn (Forms\Get $get) => !$get('foreign')),
                 Forms\Components\TextInput::make('foreign_col')
                     ->required()
                     ->columnSpan(2)
-                    ->hidden(fn(Forms\Get $get) => !$get('foreign')),
+                    ->hidden(fn (Forms\Get $get) => !$get('foreign')),
                 Forms\Components\Toggle::make('foreign_on_delete_cascade')
                     ->required()
-                    ->hidden(fn(Forms\Get $get) => !$get('foreign')),
+                    ->hidden(fn (Forms\Get $get) => !$get('foreign')),
             ]);
     }
 
@@ -125,14 +123,18 @@ class TableColsRelationManager extends RelationManager
             ->headerActions([
 
                 Tables\Actions\CreateAction::make()
-                    ->label('Add Column'),
+                    ->label(
+                        __('Add Column')
+                    ),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('id')
                         ->color('info')
                         ->requiresConfirmation()
-                        ->label('Add Id')
+                        ->label(
+                            __('Add Id')
+                        )
                         ->icon('heroicon-s-plus')
-                        ->action(function(){
+                        ->action(function () {
                             $this->ownerRecord->tableCols()->create([
                                 'name' => 'id',
                                 'type' => 'bigint',
@@ -145,8 +147,10 @@ class TableColsRelationManager extends RelationManager
                         ->color('info')
                         ->requiresConfirmation()
                         ->icon('heroicon-s-plus')
-                        ->label('Add Timestamps')
-                        ->action(function(){
+                        ->label(
+                            __('Add Timestamps')
+                        )
+                        ->action(function () {
                             $this->ownerRecord->tableCols()->createMany(
                                 [
                                     [
@@ -166,8 +170,10 @@ class TableColsRelationManager extends RelationManager
                         ->color('info')
                         ->requiresConfirmation()
                         ->icon('heroicon-s-plus')
-                        ->label('Add Soft Deletes')
-                        ->action(function(){
+                        ->label(
+                            __('Add Soft Deletes')
+                        )
+                        ->action(function () {
                             $this->ownerRecord->tableCols()->create(
                                 [
                                     'name' => 'deleted_at',

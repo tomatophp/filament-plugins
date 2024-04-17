@@ -7,12 +7,17 @@ use Filament\Pages\Page;
 class {{ name }} extends Page
 {
     public static string $view = '{{ view }}';
-    public static ?string $navigationGroup = '{{ title }}';
     public static ?string $navigationLabel = '{{ title }}';
     public static ?string $navigationIcon = '{{ icon }}';
 
     public function getTitle(): string
     {
-        return '{{ title }}';
+        return __('{{ title }}');
     }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('{{ title }}');
+    }
+
 }
