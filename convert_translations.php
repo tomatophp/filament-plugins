@@ -1,7 +1,7 @@
 <?php
 
 $directory = './'; // Change this to the path of your PHP files
-$outputFile = 'lang/en/messages.php'; // The file where the array will be saved
+$outputFile = 'lang/en/messages2.php'; // The file where the array will be saved
 
 // This function scans directories recursively and processes each PHP file
 function scanAndProcessDirectory($dir, &$messages)
@@ -13,7 +13,9 @@ function scanAndProcessDirectory($dir, &$messages)
             continue;
         }
 
-        if ($file->getExtension() === 'php') {
+        // Check if the file is a PHP or STUB file
+        $fileExtension = $file->getExtension();
+        if ($fileExtension === 'php' || $fileExtension === 'stub') {
             processFile($file->getPathname(), $messages);
         }
     }

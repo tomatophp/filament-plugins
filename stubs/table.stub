@@ -58,7 +58,7 @@ class {{ name }} extends AbstractTable
             ->bulkAction(
                 label: trans('tomato-admin::global.crud.delete'),
                 each: fn ({{ model }} $model) => $model->delete(),
-                after: fn () => Toast::danger(__('{{ title }} Has Been Deleted'))->autoDismiss(2),
+                after: fn () => Toast::danger(__('{{ title }}') trans('filament-plugins::messages.plugins.has_been_deleted'))->autoDismiss(2),
                 confirm: true
             )
             ->defaultSort('id', 'desc')

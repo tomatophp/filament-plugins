@@ -3,8 +3,8 @@
         {{ cols }}
 
         <div class="flex justify-start gap-2 pt-3">
-            <x-tomato-admin-submit  label="{{__('Save')}}" :spinner="true" />
-            <x-tomato-admin-button secondary :href="route('admin.{{ table }}.index')" label="{{__('Cancel')}}"/>
+            <x-tomato-admin-submit  label="{{trans('filament-plugins::messages.plugins.save')}}" :spinner="true" />
+            <x-tomato-admin-button secondary :href="route('admin.{{ table }}.index')" label="{{trans('filament-plugins::messages.plugins.cancel')}}"/>
         </div>
     </x-splade-form>
 </x-tomato-admin-container>

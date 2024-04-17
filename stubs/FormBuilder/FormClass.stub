@@ -28,7 +28,7 @@ class {{ name }} extends AbstractForm
           return [
               {{ cols }}
               Submit::make()
-                  ->label(__('Save')),
+                  ->label(trans('filament-plugins::messages.plugins.save')),
           ];
       }
 
