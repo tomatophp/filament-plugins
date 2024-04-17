@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tables', function (Blueprint $table) {
+        Schema::create(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_tables' : 'tables', function (Blueprint $table) {
             $table->id();
 
             //Link To Module

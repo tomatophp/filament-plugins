@@ -46,4 +46,9 @@ class Table extends Model
         $generator = new CRUDGenerator(table: $this, migration: true);
         $generator->generate();
     }
+
+    public function getTable()
+    {
+        return config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_tables' : 'tables';
+    }
 }

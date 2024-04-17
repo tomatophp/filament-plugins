@@ -54,4 +54,9 @@ class TableCol extends Model
     {
         return $this->belongsTo('TomatoPHP\FilamentPlugins\Models\Table');
     }
+
+    public function getTable()
+    {
+        return config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_table_cols' : 'table_cols';
+    }
 }

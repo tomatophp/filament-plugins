@@ -41,6 +41,7 @@
         "tomatophp/console-helpers": "^1.1",
         "filament/filament": "^3.0.0",
         "filament/notifications": "^3.0.0",
-        "nwidart/laravel-modules": "^11.0"
+        "nwidart/laravel-modules": "^11.0",
+        "guava/filament-icon-picker": "^2.2"
     }
 }

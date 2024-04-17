@@ -9,6 +9,8 @@ return [
     "allow_generator" => true,
     "clusters" => [
         "enabled" => true
-    ]
+    ],
+
+    'database_prefix' => null
 ];
 
