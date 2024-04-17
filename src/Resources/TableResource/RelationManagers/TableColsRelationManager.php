@@ -124,14 +124,14 @@ class TableColsRelationManager extends RelationManager
 
                 Tables\Actions\CreateAction::make()
                     ->label(
-                        __('Add Column')
+                        trans('filament-plugins::messages.plugins.add_column')
                     ),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('id')
                         ->color('info')
                         ->requiresConfirmation()
                         ->label(
-                            __('Add Id')
+                            trans('filament-plugins::messages.plugins.add_id')
                         )
                         ->icon('heroicon-s-plus')
                         ->action(function () {
@@ -148,7 +148,7 @@ class TableColsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->icon('heroicon-s-plus')
                         ->label(
-                            __('Add Timestamps')
+                            trans('filament-plugins::messages.plugins.add_timestamps')
                         )
                         ->action(function () {
                             $this->ownerRecord->tableCols()->createMany(
@@ -171,7 +171,7 @@ class TableColsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->icon('heroicon-s-plus')
                         ->label(
-                            __('Add Soft Deletes')
+                            trans('filament-plugins::messages.plugins.add_soft_deletes')
                         )
                         ->action(function () {
                             $this->ownerRecord->tableCols()->create(

@@ -74,21 +74,21 @@ class TableResource extends Resource
                 Tables\Actions\Action::make('migrate')
                     ->requiresConfirmation()
                     ->tooltip(
-                __('Migrate'))
+                trans('filament-plugins::messages.plugins.migrate'))
                     ->color('info')
                     ->iconButton()
                     ->icon('heroicon-s-circle-stack')
                     ->action(function (TableModel $record){
                         $record->migrate();
                         Notification::make()
-                            ->title(__('Migrated'))
-                            ->body(__('Table migrated successfully.'))
+                            ->title(trans('filament-plugins::messages.plugins.migrated'))
+                            ->body(trans('filament-plugins::messages.plugins.table_migrated_successfully'))
                             ->success()
                             ->send();
                     }),
                 Tables\Actions\Action::make('generate')
                     ->tooltip(
-                __('Generate'))
+                trans('filament-plugins::messages.plugins.generate'))
                     ->color('info')
                     ->iconButton()
                     ->icon('heroicon-s-home-modern')
@@ -113,8 +113,8 @@ class TableResource extends Resource
                     ->action(function (TableModel $record, array $data){
                         if((!Schema::hasTable($record->name)) && $data['type'] !== 'migrate'){
                             Notification::make()
-                                ->title(__('Error'))
-                                ->body(__('Table does not exist please run migrate.'))
+                                ->title(trans('filament-plugins::messages.plugins.error'))
+                                ->body(trans('filament-plugins::messages.plugins.table_does_not_exist_please_run_migrate'))
                                 ->danger()
                                 ->send();
                             return;
@@ -128,8 +128,8 @@ class TableResource extends Resource
                             sleep(1);
 
                             Notification::make()
-                                ->title(__('Migrated'))
-                                ->body(__('Table migrated successfully.'))
+                                ->title(trans('filament-plugins::messages.plugins.migrated'))
+                                ->body(trans('filament-plugins::messages.plugins.table_migrated_successfully'))
                                 ->success()
                                 ->send();
                             return;
@@ -140,8 +140,8 @@ class TableResource extends Resource
 
                         if((!$checkIfModelExists) && in_array($data['type'], ['resource', 'page', 'widget'])){
                             Notification::make()
-                                ->title(__('Error'))
-                                ->body(__('Model does not exist please generate model first.'))
+                                ->title(trans('filament-plugins::messages.plugins.error'))
+                                ->body(trans('filament-plugins::messages.plugins.model_does_not_exist_please_generate_model_first'))
                                 ->danger()
                                 ->send();
                             return;
@@ -182,8 +182,8 @@ class TableResource extends Resource
                         $generator->generate();
 
                         Notification::make()
-                            ->title(__('Generated'))
-                            ->body(__('Table generated successfully.'))
+                            ->title(trans('filament-plugins::messages.plugins.generated'))
+                            ->body(trans('filament-plugins::messages.plugins.table_generated_successfully'))
                             ->success()
                             ->send();
                     }),

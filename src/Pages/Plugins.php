@@ -36,12 +36,12 @@ class Plugins extends Page implements HasTable
 
     public function getTitle(): string
     {
-        return __('Plugins');
+        return trans('filament-plugins::messages.plugins.plugins');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Settings');
+        return trans('filament-plugins::messages.plugins.settings');
     }
 
     public function table(Table $table): Table
@@ -62,15 +62,15 @@ class Plugins extends Page implements HasTable
             ->iconButton()
             ->icon('heroicon-s-x-circle')
             ->color('danger')
-            ->tooltip(__('Disable'))
+            ->tooltip(trans('filament-plugins::messages.plugins.disable'))
             ->requiresConfirmation()
             ->action(function (array $arguments) {
                 $module = Module::find($arguments['item']['module_name']);
                 $module?->disable();
 
                 Notification::make()
-                    ->title(__("Plugin Disabled"))
-                    ->body(__("The plugin has been disabled successfully."))
+                    ->title(trans('filament-plugins::messages.plugins.plugin_disabled'))
+                    ->body(trans('filament-plugins::messages.plugins.the_plugin_has_been_disabled_successfully'))
                     ->success()
                     ->send();
 
@@ -84,15 +84,15 @@ class Plugins extends Page implements HasTable
             ->iconButton()
             ->icon('heroicon-s-trash')
             ->color('danger')
-            ->tooltip(__('Delete'))
+            ->tooltip(trans('filament-plugins::messages.plugins.delete'))
             ->requiresConfirmation()
             ->action(function (array $arguments) {
                 $module = Module::find($arguments['item']['module_name']);
                 $module?->delete();
 
                 Notification::make()
-                    ->title(__("Plugin Deleted"))
-                    ->body(__("The plugin has been deleted successfully."))
+                    ->title(trans('filament-plugins::messages.plugins.plugin_deleted'))
+                    ->body(trans('filament-plugins::messages.plugins.the_plugin_has_been_deleted_successfully'))
                     ->success()
                     ->send();
 
@@ -106,14 +106,14 @@ class Plugins extends Page implements HasTable
         return Action::make('active')
             ->iconButton()
             ->icon('heroicon-s-check-circle')
-            ->tooltip(__('Active'))
+            ->tooltip(trans('filament-plugins::messages.plugins.active'))
             ->color('success')
             ->requiresConfirmation()
             ->action(function (array $arguments) {
                 if(!class_exists(json_decode($arguments['item']['providers'])[0])){
                     Notification::make()
-                        ->title(__("You need to run autoload"))
-                        ->body(__("You need to run composer dump-autoload before activating the plugin."))
+                        ->title(trans('filament-plugins::messages.plugins.you_need_to_run_autoload'))
+                        ->body(trans('filament-plugins::messages.plugins.you_need_to_run_composer_dump_autoload_before_activating_the_plugin'))
                         ->danger()
                         ->send();
                     return;
@@ -122,8 +122,8 @@ class Plugins extends Page implements HasTable
                 $module?->enable();
 
                 Notification::make()
-                    ->title(__("Plugin Enabled"))
-                    ->body(__("The plugin has been enabled successfully."))
+                    ->title(trans('filament-plugins::messages.plugins.plugin_enabled'))
+                    ->body(trans('filament-plugins::messages.plugins.the_plugin_has_been_enabled_successfully'))
                     ->success()
                     ->send();
 
@@ -138,20 +138,20 @@ class Plugins extends Page implements HasTable
             return [
                 Action::make('create')
                     ->label(
-                    __('Create Plugin'))
+                    trans('filament-plugins::messages.plugins.create_plugin'))
                     ->icon('heroicon-o-plus')
                     ->form([
                         TextInput::make('name')
                             ->label(
-                        __('Plugin Name'))
+                        trans('filament-plugins::messages.plugins.plugin_name'))
                             ->placeholder(
-                        __('e.g. My Plugin'))
+                        trans('filament-plugins::messages.plugins.e_g_my_plugin'))
                             ->required(),
                         Textarea::make('description')
                             ->label(
-                        __('Description'))
+                        trans('filament-plugins::messages.plugins.description'))
                             ->placeholder(
-                        __('e.g. A simple plugin for Filament'))
+                        trans('filament-plugins::messages.plugins.e_g_a_simple_plugin_for_filament'))
                             ->required(),
                         ColorPicker::make('color')->required(),
                         IconPicker::make('icon')->required()
@@ -159,12 +159,12 @@ class Plugins extends Page implements HasTable
                     ->action(fn (array $data) => $this->createPlugin($data)),
                 Action::make('import')
                     ->label(
-                    __('Import Plugin'))
+                    trans('filament-plugins::messages.plugins.import_plugin'))
                     ->icon('heroicon-o-arrow-up-on-square')
                     ->form([
                         FileUpload::make('file')
                             ->label(
-                        __('Plugin File'))
+                        trans('filament-plugins::messages.plugins.plugin_file'))
                             ->acceptedFileTypes(['application/zip'])
                             ->required()
                             ->storeFiles(false)
@@ -191,8 +191,8 @@ class Plugins extends Page implements HasTable
             $zip->close();
 
             Notification::make()
-                ->title(__("Plugin Uploaded"))
-                ->body(__("The plugin has been uploaded successfully."))
+                ->title(trans('filament-plugins::messages.plugins.plugin_uploaded'))
+                ->body(trans('filament-plugins::messages.plugins.the_plugin_has_been_uploaded_successfully'))
                 ->success()
                 ->send();
 
@@ -206,8 +206,8 @@ class Plugins extends Page implements HasTable
         $checkIfPluginExists = Module::find(Str::of($data['name'])->camel()->ucfirst()->toString());
         if($checkIfPluginExists){
             Notification::make()
-                ->title(__("Plugin Already Exists"))
-                ->body(__("The plugin you are trying to create already exists."))
+                ->title(trans('filament-plugins::messages.plugins.plugin_already_exists'))
+                ->body(trans('filament-plugins::messages.plugins.the_plugin_you_are_trying_to_create_already_exists'))
                 ->danger()
                 ->send();
         }
@@ -221,8 +221,8 @@ class Plugins extends Page implements HasTable
         $generator->generate();
 
         Notification::make()
-            ->title(__("Plugin Generated Success"))
-            ->body(__("The plugin has been generated successfully."))
+            ->title(trans('filament-plugins::messages.plugins.plugin_generated_success'))
+            ->body(trans('filament-plugins::messages.plugins.the_plugin_has_been_generated_successfully'))
             ->success()
             ->send();
     }
