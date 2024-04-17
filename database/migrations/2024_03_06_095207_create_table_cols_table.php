@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('table_cols', function (Blueprint $table) {
+        Schema::create(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_table_cols' : 'table_cols', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('table_id')->constrained('tables')->cascadeOnDelete();
+            $table->foreignId('table_id')->constrained(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_tables' : 'tables')->cascadeOnDelete();
 
             $table->string('name');
             $table->string('type')->default('varchar')->nullable();
