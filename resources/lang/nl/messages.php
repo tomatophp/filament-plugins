@@ -1,55 +1,102 @@
 <?php
 
 return [
-    'plugins' =>
-    [
-        'save' => 'Opslaan',
-        'delete' => 'Verwijderen',
-        'cancel' => 'Annuleren',
-        'edit' => 'Bewerk',
-        'updated_successfully' => 'succesvol geupdatet',
-        'deleted_successfully' => 'met succes verwijderd',
-        'create' => 'Aanmaken',
-        'has_been_deleted' => 'is verwijderd',
-        'add_column' => 'Kolom toevoegen',
-        'add_id' => 'Id toevoegen',
-        'add_timestamps' => 'Timestamps toevoegen',
-        'add_soft_deletes' => 'Soft Deletes toevoegen',
-        'create_table' => 'Tabel maken',
-        'migrate' => 'Migreren',
-        'migrated' => 'Gemigreerd',
-        'table_migrated_successfully' => 'Tabel is succesvol gemigreerd.',
-        'generate' => 'Genereer',
-        'error' => 'Fout',
-        'docs' => 'Docs',
-        'table_does_not_exist_please_run_migrate' => 'Tabel bestaat niet. Voer de migratie uit.',
-        'model_does_not_exist_please_generate_model_first' => 'Model bestaat niet, genereer eerst een model.',
-        'generated' => 'Gegenereerd',
-        'table_generated_successfully' => 'Tabel is succesvol gegenereerd.',
-        'plugins' => 'Plug-ins',
-        'settings' => 'Instellingen',
-        'disable' => 'Uitschakelen',
-        'plugin_disabled' => 'Plug-in Uitgeschakeld',
-        'the_plugin_has_been_disabled_successfully' => 'De plug-in is succesvol uitgeschakeld.',
-        'plugin_deleted' => 'Plug-in Verwijderd',
-        'the_plugin_has_been_deleted_successfully' => 'The plug-in is succesvol verwijderd.',
-        'active' => 'Actief',
-        'you_need_to_run_autoload' => 'U moet `autoload` uitvoeren',
-        'you_need_to_run_composer_dump_autoload_before_activating_the_plugin' => 'U moet `composer dump-autoload` uitvoeren voordat u de plug-in activeert.',
-        'plugin_enabled' => 'Plug-in ingeschakeld',
-        'the_plugin_has_been_enabled_successfully' => 'De plug-in is succesvol ingeschakeld.',
-        'create_plugin' => 'Plug-in maken',
-        'plugin_name' => 'Naam Plug-in',
-        'e_g_my_plugin' => 'vb. Mijn Plugin',
-        'description' => 'Beschrijving',
-        'e_g_a_simple_plugin_for_filament' => 'vb. Een eenvoudige plug-in voor Filament',
-        'import_plugin' => 'Importeer Plug-in',
-        'plugin_file' => 'Plug-in Bestand',
-        'plugin_uploaded' => 'Plug-in geüpload',
-        'the_plugin_has_been_uploaded_successfully' => 'De plug-in is succesvol geüpload.',
-        'plugin_already_exists' => 'Plug-in bestaat al',
-        'the_plugin_you_are_trying_to_create_already_exists' => 'De plug-in die u probeert te maken bestaat al.',
-        'plugin_generated_success' => 'Plug-in succesvol gegenereerd',
-        'the_plugin_has_been_generated_successfully' => 'De plug-in is succesvol gegenereerd.',
+    'group' => 'Settings',
+    'plugins' => [
+        'title' => 'Plugins',
+        'create' => 'Create Plugin',
+        'import' => 'Import Plugin',
+        'form' => [
+            'name' => 'Name',
+            'name-placeholder' => 'e.g. My Plugin',
+            'description' => 'Description',
+            'description-placeholder' => 'e.g. A simple plugin for Filament',
+            'icon' => 'Icon',
+            'color' => 'Color',
+            'file' => 'Plugin ZIP file',
+        ],
+        'actions' => [
+            'generate' => 'Generate',
+            'active' => 'Active',
+            'disable' => 'Disable',
+            'delete' => 'Delete',
+            'github' => 'Github',
+            'docs' => 'Docs',
+        ],
+        'notifications' => [
+            'autoload' => [
+                'title' => 'Error',
+                'body' => 'The plugin could not be activated because the class could not be found. please run composer dump-autoload on your terminal'
+            ],
+            'enabled' => [
+                'title' => 'Success',
+                'body' => 'The plugin has been activated successfully.'
+            ],
+            'deleted' => [
+                'title' => 'Success',
+                'body' => 'The plugin has been deleted successfully.'
+            ],
+            'disabled' => [
+                'title' => 'Success',
+                'body' => 'The plugin has been deactivated successfully.'
+            ],
+            'import' => [
+                'title' => 'Success',
+                'body' => 'The plugin has been imported successfully.'
+            ]
+        ]
     ],
+    'tables' => [
+        'title' => 'Tables',
+        'create' => 'Create Table',
+        'edit' => 'Edit Table',
+        'columns' => 'Table Columns',
+        'form' => [
+            'name' => 'Name',
+            'type' => 'Type',
+            'nullable' => 'Nullable',
+            'foreign' => 'Foreign',
+            'foreign_table' => 'Foreign Table',
+            'foreign_col' => 'Foreign Column',
+            'foreign_on_delete_cascade' => 'On Delete Cascade',
+            'auto_increment' => 'Auto Increment',
+            'primary' => 'Primary',
+            'unsigned' => 'Unsigned',
+            'default' => 'Default',
+            'unique' => 'Unique',
+            'index' => 'Index',
+            'lenth' => 'Length',
+            'migrated' => 'Migrated',
+            'generated' => 'Generated',
+            'created_at' => 'Created At',
+            'updated_at' => 'Update At',
+        ],
+        'actions' => [
+            'create' => 'Create Table',
+            'migrate' => 'Migrate',
+            'generate' => 'Generate',
+            'columns' => 'Add Column',
+            'add-id' => 'Add ID Column',
+            'add-timestamps' => 'Add Timestamps',
+            'add-softdeletes' => 'Add Soft Deletes',
+        ],
+        'notifications' => [
+            'migrated' => [
+                'title' => 'Success',
+                'body' => 'The table has been migrated successfully.'
+            ],
+            'not-migrated' => [
+                'title' => 'Error',
+                'body' => 'The table could not be migrated.'
+            ],
+            'generated' => [
+                'title' => 'Success',
+                'body' => 'The table has been generated successfully.'
+            ],
+            'model' => [
+                'title' => 'Error',
+                'body' => 'The model could not be found generate it first.'
+            ]
+        ]
+    ]
 ];

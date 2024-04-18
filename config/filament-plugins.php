@@ -11,6 +11,8 @@ return [
         "enabled" => true
     ],
 
-    'database_prefix' => null
+    'database_prefix' => null,
+
+    'scan' => true
 ];
 

@@ -20,7 +20,7 @@ class TableColsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return 'Table Columns';
+        return trans('filament-plugins::messages.tables.columns');
     }
 
     public function form(Form $form): Form
@@ -28,9 +28,11 @@ class TableColsRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(trans('filament-plugins::messages.tables.form.name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('type')
+                    ->label(trans('filament-plugins::messages.tables.form.type'))
                     ->searchable()
                     ->required()
                     ->default('string')
@@ -53,17 +55,26 @@ class TableColsRelationManager extends RelationManager
                         'timestamps' => 'timestamps',
                     ]),
                 Forms\Components\TextInput::make('length')
+                    ->label(trans('filament-plugins::messages.tables.form.lenth'))
                     ->default(255)
                     ->maxLength(255),
                 Forms\Components\TextInput::make('default')
                     ->maxLength(255),
-                Forms\Components\Toggle::make('nullable')->default(true),
-                Forms\Components\Toggle::make('unsigned'),
-                Forms\Components\Toggle::make('auto_increment'),
-                Forms\Components\Toggle::make('primary'),
-                Forms\Components\Toggle::make('unique'),
-                Forms\Components\Toggle::make('index'),
+                Forms\Components\Toggle::make('nullable')
+                    ->label(trans('filament-plugins::messages.tables.form.nullable'))
+                    ->default(true),
+                Forms\Components\Toggle::make('unsigned')
+                    ->label(trans('filament-plugins::messages.tables.form.unsigned')),
+                Forms\Components\Toggle::make('auto_increment')
+                    ->label(trans('filament-plugins::messages.tables.form.auto_increment')),
+                Forms\Components\Toggle::make('primary')
+                    ->label(trans('filament-plugins::messages.tables.form.primary')),
+                Forms\Components\Toggle::make('unique')
+                    ->label(trans('filament-plugins::messages.tables.form.unique')),
+                Forms\Components\Toggle::make('index')
+                    ->label(trans('filament-plugins::messages.tables.form.index')),
                 Forms\Components\Toggle::make('foreign')
+                    ->label(trans('filament-plugins::messages.tables.form.foreign'))
                     ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get) {
                         if ($get('foreign') === true) {
                             $set('type', 'bigint');
@@ -75,14 +86,17 @@ class TableColsRelationManager extends RelationManager
                     })
                     ->live(),
                 Forms\Components\TextInput::make('foreign_table')
+                    ->label(trans('filament-plugins::messages.tables.form.foreign_table'))
                     ->required()
                     ->columnSpan(2)
                     ->hidden(fn (Forms\Get $get) => !$get('foreign')),
                 Forms\Components\TextInput::make('foreign_col')
+                    ->label(trans('filament-plugins::messages.tables.form.foreign_col'))
                     ->required()
                     ->columnSpan(2)
                     ->hidden(fn (Forms\Get $get) => !$get('foreign')),
                 Forms\Components\Toggle::make('foreign_on_delete_cascade')
+                    ->label(trans('filament-plugins::messages.tables.form.foreign_on_delete_cascade'))
                     ->required()
                     ->hidden(fn (Forms\Get $get) => !$get('foreign')),
             ]);
@@ -94,12 +108,16 @@ class TableColsRelationManager extends RelationManager
             ->reorderable('id')
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('type'),
-                Tables\Columns\BooleanColumn::make('nullable'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(trans('filament-plugins::messages.tables.form.name')),
+                Tables\Columns\TextColumn::make('type')
+                    ->label(trans('filament-plugins::messages.tables.form.type')),
+                Tables\Columns\BooleanColumn::make('nullable')
+                    ->label(trans('filament-plugins::messages.tables.form.nullable')),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
+                    ->label(trans('filament-plugins::messages.tables.form.type'))
                     ->searchable()
                     ->options([
                         'int' => 'int',
@@ -121,18 +139,13 @@ class TableColsRelationManager extends RelationManager
                     ]),
             ])
             ->headerActions([
-
                 Tables\Actions\CreateAction::make()
-                    ->label(
-                        trans('filament-plugins::messages.plugins.add_column')
-                    ),
+                    ->label(trans('filament-plugins::messages.tables.actions.columns')),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('id')
                         ->color('info')
                         ->requiresConfirmation()
-                        ->label(
-                            trans('filament-plugins::messages.plugins.add_id')
-                        )
+                        ->label(trans('filament-plugins::messages.tables.actions.add-id'))
                         ->icon('heroicon-s-plus')
                         ->action(function () {
                             $this->ownerRecord->tableCols()->create([
@@ -147,9 +160,7 @@ class TableColsRelationManager extends RelationManager
                         ->color('info')
                         ->requiresConfirmation()
                         ->icon('heroicon-s-plus')
-                        ->label(
-                            trans('filament-plugins::messages.plugins.add_timestamps')
-                        )
+                        ->label(trans('filament-plugins::messages.tables.actions.add-timestamps'))
                         ->action(function () {
                             $this->ownerRecord->tableCols()->createMany(
                                 [
@@ -170,9 +181,7 @@ class TableColsRelationManager extends RelationManager
                         ->color('info')
                         ->requiresConfirmation()
                         ->icon('heroicon-s-plus')
-                        ->label(
-                            trans('filament-plugins::messages.plugins.add_soft_deletes')
-                        )
+                        ->label(trans('filament-plugins::messages.tables.actions.add-softdeletes'))
                         ->action(function () {
                             $this->ownerRecord->tableCols()->create(
                                 [

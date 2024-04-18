@@ -32,6 +32,7 @@ class TableResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(trans('filament-plugins::messages.tables.form.name'))
                     ->columnSpan(2)
                     ->required()
                     ->maxLength(255),
@@ -51,16 +52,21 @@ class TableResource extends Resource
             ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(trans('filament-plugins::messages.tables.form.name'))
                     ->searchable(),
                 Tables\Columns\IconColumn::make('migrated')
+                    ->label(trans('filament-plugins::messages.tables.form.migrated'))
                     ->boolean(),
                 Tables\Columns\IconColumn::make('generated')
+                    ->label(trans('filament-plugins::messages.tables.form.generated'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(trans('filament-plugins::messages.tables.form.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(trans('filament-plugins::messages.tables.form.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -69,26 +75,26 @@ class TableResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->iconButton(),
-                Tables\Actions\DeleteAction::make()->iconButton(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                    ->iconButton(),
                 Tables\Actions\Action::make('migrate')
                     ->requiresConfirmation()
-                    ->tooltip(
-                trans('filament-plugins::messages.plugins.migrate'))
+                    ->tooltip(trans('filament-plugins::messages.tables.actions.migrate'))
                     ->color('info')
                     ->iconButton()
                     ->icon('heroicon-s-circle-stack')
                     ->action(function (TableModel $record){
                         $record->migrate();
                         Notification::make()
-                            ->title(trans('filament-plugins::messages.plugins.migrated'))
-                            ->body(trans('filament-plugins::messages.plugins.table_migrated_successfully'))
+                            ->title(trans('filament-plugins::messages.tables.notifications.migrated.title'))
+                            ->body(trans('filament-plugins::messages.tables.notifications.migrated.body'))
                             ->success()
                             ->send();
                     }),
                 Tables\Actions\Action::make('generate')
-                    ->tooltip(
-                trans('filament-plugins::messages.plugins.generate'))
+                    ->tooltip(trans('filament-plugins::messages.tables.actions.generate'))
                     ->color('info')
                     ->iconButton()
                     ->icon('heroicon-s-home-modern')
@@ -113,8 +119,8 @@ class TableResource extends Resource
                     ->action(function (TableModel $record, array $data){
                         if((!Schema::hasTable($record->name)) && $data['type'] !== 'migrate'){
                             Notification::make()
-                                ->title(trans('filament-plugins::messages.plugins.error'))
-                                ->body(trans('filament-plugins::messages.plugins.table_does_not_exist_please_run_migrate'))
+                                ->title(trans('filament-plugins::messages.tables.notifications.not-migrated.title'))
+                                ->body(trans('filament-plugins::messages.tables.notifications.not-migrated.body'))
                                 ->danger()
                                 ->send();
                             return;
@@ -128,8 +134,8 @@ class TableResource extends Resource
                             sleep(1);
 
                             Notification::make()
-                                ->title(trans('filament-plugins::messages.plugins.migrated'))
-                                ->body(trans('filament-plugins::messages.plugins.table_migrated_successfully'))
+                                ->title(trans('filament-plugins::messages.tables.notifications.migrated.title'))
+                                ->body(trans('filament-plugins::messages.tables.notifications.migrated.body'))
                                 ->success()
                                 ->send();
                             return;
@@ -140,8 +146,8 @@ class TableResource extends Resource
 
                         if((!$checkIfModelExists) && in_array($data['type'], ['resource', 'page', 'widget'])){
                             Notification::make()
-                                ->title(trans('filament-plugins::messages.plugins.error'))
-                                ->body(trans('filament-plugins::messages.plugins.model_does_not_exist_please_generate_model_first'))
+                                ->title(trans('filament-plugins::messages.tables.notifications.model.title'))
+                                ->body(trans('filament-plugins::messages.tables.notifications.model.body'))
                                 ->danger()
                                 ->send();
                             return;
@@ -182,8 +188,8 @@ class TableResource extends Resource
                         $generator->generate();
 
                         Notification::make()
-                            ->title(trans('filament-plugins::messages.plugins.generated'))
-                            ->body(trans('filament-plugins::messages.plugins.table_generated_successfully'))
+                            ->title(trans('filament-plugins::messages.tables.notifications.generated.title'))
+                            ->body(trans('filament-plugins::messages.tables.notifications.generated.body'))
                             ->success()
                             ->send();
                     }),

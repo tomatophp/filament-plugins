@@ -21,33 +21,35 @@ class FilamentPluginsPlugin implements Plugin
         $plugins = \TomatoPHP\FilamentPlugins\Models\Plugin::all();
         $useClusters = config('filament-plugins.clusters.enabled', false);
         foreach ($plugins as $plugin){
-            $module = Module::find($plugin->module_name);
-            if($module->isEnabled()){
-                $panel->discoverPages(
-                    in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages'),
-                    for: $module->appNamespace('\\Filament\\Pages')
-                );
-                $panel->discoverResources(
-                    in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Resources'),
-                    for: $module->appNamespace('\\Filament\\Resources')
-                );
-                $panel->discoverWidgets(
-                    in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Widgets'),
-                    for: $module->appNamespace('\\Filament\\Widgets')
-                );
-
-                $panel->discoverLivewireComponents(
-                    in: $module->appPath('Livewire'),
-                    for: $module->appNamespace('\\Livewire')
-                );
-
-                if ($useClusters) {
-                    $path = $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Clusters');
-                    $namespace = $module->appNamespace('\\Filament\\Clusters');
-                    $panel->discoverClusters(
-                        in: $path,
-                        for: $namespace,
+            if($plugin->type === 'plugin'){
+                $module = Module::find($plugin->module_name);
+                if($module->isEnabled()){
+                    $panel->discoverPages(
+                        in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages'),
+                        for: $module->appNamespace('\\Filament\\Pages')
                     );
+                    $panel->discoverResources(
+                        in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Resources'),
+                        for: $module->appNamespace('\\Filament\\Resources')
+                    );
+                    $panel->discoverWidgets(
+                        in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Widgets'),
+                        for: $module->appNamespace('\\Filament\\Widgets')
+                    );
+
+                    $panel->discoverLivewireComponents(
+                        in: $module->appPath('Livewire'),
+                        for: $module->appNamespace('\\Livewire')
+                    );
+
+                    if ($useClusters) {
+                        $path = $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Clusters');
+                        $namespace = $module->appNamespace('\\Filament\\Clusters');
+                        $panel->discoverClusters(
+                            in: $path,
+                            for: $namespace,
+                        );
+                    }
                 }
             }
         }
