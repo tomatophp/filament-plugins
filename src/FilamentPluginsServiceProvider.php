@@ -2,6 +2,7 @@
 
 namespace TomatoPHP\FilamentPlugins;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Laravel\Module;
 
@@ -59,6 +60,7 @@ class FilamentPluginsServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+
     }
 
 
