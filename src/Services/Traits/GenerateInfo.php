@@ -20,11 +20,17 @@ trait GenerateInfo
             $module->title['ar'] = $this->title;
             $module->title['en'] = $this->title;
             $module->title['gr'] = $this->title;
+            $module->title['de'] = $this->title;
+            $module->title['nl'] = $this->title;
+            $module->title['fr'] = $this->title;
             $module->title['sp'] = $this->title;
             $module->description = [];
             $module->description['ar'] = $this->description;
             $module->description['en'] = $this->description;
             $module->description['gr'] = $this->description;
+            $module->description['de'] = $this->description;
+            $module->description['nl'] = $this->description;
+            $module->description['fr'] = $this->description;
             $module->description['sp'] = $this->description;
             $module->color = $this->color;
             $module->icon = $this->icon;

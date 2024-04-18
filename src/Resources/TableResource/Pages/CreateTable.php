@@ -10,6 +10,11 @@ class CreateTable extends CreateRecord
 {
     protected static string $resource = TableResource::class;
 
+    public function getTitle(): string
+    {
+        return trans('filament-plugins::messages.tables.create');
+    }
+
     public ?string $module = null;
 
     public function mount(): void

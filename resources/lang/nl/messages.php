@@ -3,10 +3,10 @@
 return [
     'group' => 'Settings',
     'plugins' => [
-       'title' => 'Plugins',
-       'create' => 'Create Plugin',
-       'import' => 'Import Plugin',
-       'form' => [
+        'title' => 'Plugins',
+        'create' => 'Create Plugin',
+        'import' => 'Import Plugin',
+        'form' => [
             'name' => 'Name',
             'name-placeholder' => 'e.g. My Plugin',
             'description' => 'Description',
@@ -14,15 +14,15 @@ return [
             'icon' => 'Icon',
             'color' => 'Color',
             'file' => 'Plugin ZIP file',
-       ],
-       'actions' => [
+        ],
+        'actions' => [
             'generate' => 'Generate',
             'active' => 'Active',
             'disable' => 'Disable',
             'delete' => 'Delete',
-           'github' => 'Github',
-           'docs' => 'Docs',
-       ],
+            'github' => 'Github',
+            'docs' => 'Docs',
+        ],
         'notifications' => [
             'autoload' => [
                 'title' => 'Error',

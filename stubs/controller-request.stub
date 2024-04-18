@@ -63,7 +63,7 @@ class {{ name }} extends Controller
         $response = Tomato::store(
             request: $request,
             model: {{ model }}::class,
-            message: __('{{ title }} updated successfully'),
+            message: __('{{ title }}') trans('filament-plugins::messages.plugins.updated_successfully'),
             redirect: 'admin.{{ table }}.index',
         );
 
@@ -108,7 +108,7 @@ class {{ name }} extends Controller
         $response = Tomato::update(
             request: $request,
             model: $model,
-            message: __('{{ title }} updated successfully'),
+            message: __('{{ title }}') trans('filament-plugins::messages.plugins.updated_successfully'),
             redirect: 'admin.{{ table }}.index',
         );
 
@@ -127,7 +127,7 @@ class {{ name }} extends Controller
     {
         $response = Tomato::destroy(
             model: $model,
-            message: __('{{ title }} deleted successfully'),
+            message: __('{{ title }}') trans('filament-plugins::messages.plugins.deleted_successfully'),
             redirect: 'admin.{{ table }}.index',
         );
 

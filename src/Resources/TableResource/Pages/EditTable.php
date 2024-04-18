@@ -10,6 +10,11 @@ class EditTable extends EditRecord
 {
     protected static string $resource = TableResource::class;
 
+    public function getTitle(): string
+    {
+        return trans('filament-plugins::messages.tables.edit');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

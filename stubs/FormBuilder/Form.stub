@@ -1,3 +1,3 @@
-<x-tomato-admin-container :label="isset($model) ? __('Edit {{ title }}') . ' #' .$model->id : __('Create {{ title }}')">
+<x-tomato-admin-container :label="isset($model) ? trans('filament-plugins::messages.plugins.edit') __({{ title }}) . ' #' .$model->id : trans('filament-plugins::messages.plugins.create') __({{ title }}')">
        <x-splade-form :for="$form" />
 </x-tomato-admin-container>

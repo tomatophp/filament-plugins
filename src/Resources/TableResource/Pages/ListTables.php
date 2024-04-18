@@ -10,12 +10,16 @@ class ListTables extends ListRecords
 {
     protected static string $resource = TableResource::class;
 
+    public function getTitle(): string
+    {
+        return trans('filament-plugins::messages.tables.title');
+    }
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\Action::make('create')
-                ->label('Create Table')
+                ->label(trans('filament-plugins::messages.tables.actions.create'))
                 ->url(route('filament.'.filament()->getCurrentPanel()->getId().'.resources.tables.create', ['module' => request()->get('module')]))
         ];
     }
