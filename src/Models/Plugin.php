@@ -99,7 +99,14 @@ class Plugin extends Model
             }
         }
 
-        $values = array_values($getPlugins->toArray());
+        if(is_array($getPlugins)){
+            $values = array_values($getPlugins);
+        }
+        else {
+            $values = array_values($getPlugins->toArray());
+        }
+
+
         return array_merge($values, array_values($providersPlugins));
     }
 }
