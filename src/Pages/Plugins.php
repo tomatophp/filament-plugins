@@ -14,7 +14,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Guava\FilamentIconPicker\Forms\IconPicker;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Artisan;
@@ -22,6 +21,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Nwidart\Modules\Facades\Module;
+use TomatoPHP\FilamentIcons\Components\IconPicker;
 use TomatoPHP\FilamentPlugins\Models\Plugin;
 use TomatoPHP\FilamentPlugins\Services\PluginGenerator;
 
