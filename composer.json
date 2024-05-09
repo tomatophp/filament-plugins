@@ -42,7 +42,7 @@
         "filament/filament": "^3.0.0",
         "filament/notifications": "^3.0.0",
         "nwidart/laravel-modules": "^11.0",
-        "tomatophp/tomato-icons": "^1.0",
+        "tomatophp/filament-icons": "^1.0",
         "calebporzio/sushi": "*"
     }
 }
