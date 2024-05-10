@@ -126,6 +126,26 @@ make sure you allow packages scan on the `filament-plugins.php` config file
 'scan' => true
 ```
 
+## Use Selected Module in your panel
+
+you can use the selected module in your panel by use this code in your PanelProvider
+
+```php
+->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->modules([
+    'CRM'
+]))
+```
+
+so you will see only the selected modules in your panel
+
+## Stop Auto Discover Module Resources
+
+you can stop auto load module resources by use this code in your PanelProvider
+
+```php
+->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->autoDiscoverModules(false))
+```
+
 ## Publish Assets
 
 you can publish config file by use this command
