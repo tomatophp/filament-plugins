@@ -128,7 +128,7 @@ make sure you allow packages scan on the `filament-plugins.php` config file
 
 ## Use Selected Module in your panel
 
-you can use the selected module in your panel by use this code in your PanelProvider
+you can use the selected module in your panel by using this code in your PanelProvider
 
 ```php
 ->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->modules([
@@ -140,7 +140,7 @@ so you will see only the selected modules in your panel
 
 ## Stop Auto Discover Module Resources
 
-you can stop auto load module resources by use this code in your PanelProvider
+you can stop auto-load module resources by using this code in your PanelProvider
 
 ```php
 ->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->autoDiscoverModules(false))
