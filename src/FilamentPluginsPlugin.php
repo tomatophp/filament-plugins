@@ -11,6 +11,10 @@ use TomatoPHP\FilamentPlugins\Resources\TableResource;
 
 class FilamentPluginsPlugin implements Plugin
 {
+
+    private array $modules = [];
+    private bool $autoDiscoverModules = true;
+
     public function getId(): string
     {
         return 'filament-plugins';
@@ -20,8 +24,11 @@ class FilamentPluginsPlugin implements Plugin
     {
         $plugins = \TomatoPHP\FilamentPlugins\Models\Plugin::all();
         $useClusters = config('filament-plugins.clusters.enabled', false);
+        if(!count($this->modules) && $this->autoDiscoverModules){
+            $this->modules = Module::all();
+        }
         foreach ($plugins as $plugin){
-            if($plugin->type === 'plugin'){
+            if($plugin->type === 'plugin' && in_array($plugin->module_name, $this->modules)){
                 $module = Module::find($plugin->module_name);
                 if($module->isEnabled()){
                     $panel->discoverPages(
@@ -61,6 +68,18 @@ class FilamentPluginsPlugin implements Plugin
             ->pages([
                 Plugins::class
             ]);
+    }
+
+    public function autoDiscoverModules(bool $autoDiscoverModules = true)
+    {
+        $this->autoDiscoverModules = $autoDiscoverModules;
+        return $this;
+    }
+
+    public function modules(array $modules)
+    {
+        $this->modules = $modules;
+        return $this;
     }
 
     public function boot(Panel $panel): void
