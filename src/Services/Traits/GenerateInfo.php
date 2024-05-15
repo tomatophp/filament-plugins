@@ -34,11 +34,6 @@ trait GenerateInfo
             $module->description['sp'] = $this->description;
             $module->color = $this->color;
             $module->icon = $this->icon;
-            $module->pages = [
-                "Modules\\".$this->name."\\Pages\\".$this->name."Page"
-            ];
-            $module->resources = [];
-            $module->widgets = [];
             $module->placeholder = "placeholder.webp";
             $module->type = "plugin";
             $module->version = "v1.0";

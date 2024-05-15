@@ -108,10 +108,6 @@ you can list your package on the plugins list by adding this a json file in your
     },
     "color": "#007dff",
     "icon": "heroicon-c-user-circle",
-    "pages": [
-    ],
-    "resources": [],
-    "widgets": [],
     "placeholder": "placeholder.webp",
     "type": "lib",
     "version": "v1.0",
@@ -138,12 +134,28 @@ you can use the selected module in your panel by using this code in your PanelPr
 
 so you will see only the selected modules in your panel
 
+## Get Only Current Panel Plugins
+
+on any plugin you can create a Page/Resource/Widget for selected panel, so if you need to showup only the current panel Page/Resources/Widgets you can use this code in your PanelProvider
+
+```php
+->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->discoverCurrentPanelOnly())
+```
+
 ## Stop Auto Discover Module Resources
 
 you can stop auto-load module resources by using this code in your PanelProvider
 
 ```php
 ->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->autoDiscoverModules(false))
+```
+
+## Stop Using Plugins UI
+
+you can stop using the plugins UI by using this code in your PanelProvider
+
+```php
+->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->useUI(false))
 ```
 
 ## Publish Assets

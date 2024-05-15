@@ -14,6 +14,8 @@ use Filament\Tables\Commands\Concerns\CanGenerateTables;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Nwidart\Modules\Facades\Module;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
@@ -85,6 +87,20 @@ class FilamentResourceGenerate extends Command
 
         $resourceDirectories = collect($panel->getResourceDirectories())->filter(fn ($directory) => str($directory)->contains($module->appPath()))->values()->toArray();
         $resourceNamespaces = collect($panel->getResourceNamespaces())->filter(fn ($namespace) => str($namespace)->contains($module->appNamespace()))->values()->toArray();
+
+        //Create Directory For Selected Panel in Module If Not Exists
+        if(count($resourceDirectories) < 1 && count($resourceNamespaces) < 1){
+            $modulePath = module_path($moduleName);
+            if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
+                File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+            }
+            if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resources')){
+                File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resources');
+            }
+            $resourceDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resources';
+            $resourceNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Resources';
+        }
+
 
         $namespace = (count($resourceNamespaces) > 1) ?
             select(

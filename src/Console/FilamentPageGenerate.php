@@ -8,6 +8,7 @@ use Filament\Commands\MakePageCommand;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 use Nwidart\Modules\Facades\Module;
@@ -193,6 +194,19 @@ class FilamentPageGenerate extends MakePageCommand
             $pageDirectories = collect($panel->getPageDirectories())->filter(fn (string $directory): bool => str($directory)->contains($module->appPath()))->values()->all();
             $pageNamespaces = collect($panel->getPageNamespaces())->filter(fn (string $namespace): bool => str($namespace)->contains($module->appNamespace()))->values()->all();
 
+            //Create Directory For Selected Panel in Module If Not Exists
+            if(count($pageDirectories) < 1 && count($pageNamespaces) < 1){
+                $modulePath = module_path($moduleName);
+                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
+                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+                }
+                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Pages')){
+                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Pages');
+                }
+                $pageDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Pages';
+                $pageNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Pages';
+            }
+
             $namespace = (count($pageNamespaces) > 1) ?
                 select(
                     label: 'Which namespace would you like to create this in?',
@@ -206,6 +220,26 @@ class FilamentPageGenerate extends MakePageCommand
         } else {
             $resourceDirectories = collect($panel->getResourceDirectories())->filter(fn (string $directory): bool => str($directory)->contains($module->appPath()))->values()->all();
             $resourceNamespaces = collect($panel->getResourceNamespaces())->filter(fn (string $namespace): bool => str($namespace)->contains($module->appNamespace()))->values()->all();
+
+            //Create Directory For Selected Panel in Module If Not Exists
+            if(count($resourceDirectories) < 1 && count($resourceNamespaces) < 1){
+                $modulePath = module_path($moduleName);
+                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
+                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+                }
+                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource')){
+                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource');
+                }
+                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource)){
+                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource);
+                }
+                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages')){
+                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages');
+                }
+
+                $resourceDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages';
+                $resourceNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Resource\\'.$resource.'\\Pages';
+            }
 
             $resourceNamespace = (count($resourceNamespaces) > 1) ?
                 select(
