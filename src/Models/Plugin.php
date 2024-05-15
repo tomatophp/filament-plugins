@@ -25,9 +25,6 @@ class Plugin extends Model
         'github' => 'string',
         'active' => 'boolean',
         'providers' => 'json',
-        'pages' => 'json',
-        'resources' => 'json',
-        'widgets' => 'json',
         'type' => 'string',
     ];
 
@@ -58,10 +55,7 @@ class Plugin extends Model
                     "github" => isset($info->github)?$info->github:null,
                     "docs" => isset($info->docs)?$info->docs:null,
                     "active" => Module::find($info->name)->isEnabled(),
-                    "providers" => json_encode($info->providers),
-                    "resources" => json_encode($info->resources),
-                    "pages" => json_encode($info->pages),
-                    "widgets" => json_encode($info->widgets),
+                    "providers" => json_encode($info->providers)
                 ];
             });
         }
@@ -88,10 +82,7 @@ class Plugin extends Model
                                 "github" => isset($info->github)?$info->github:null,
                                 "docs" => isset($info->docs)?$info->docs:null,
                                 "active" => false,
-                                "providers" => json_encode($info->providers),
-                                "resources" => json_encode($info->resources),
-                                "pages" => json_encode($info->pages),
-                                "widgets" => json_encode($info->widgets),
+                                "providers" => json_encode($info->providers)
                             ];
                         }
                     }
