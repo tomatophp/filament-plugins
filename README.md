@@ -1,4 +1,4 @@
-![Screenshot](https://github.com/tomatophp/filament-plugins/blob/master/arts/3x1io-tomato-plugins.jpg)
+![Screenshot](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/3x1io-tomato-plugins.jpg)
 
 # Filament plugins
 
@@ -11,11 +11,11 @@ Manage your modules as a plugin system with plugin generator
 
 ## Screenshots
 
-![Plugins](https://github.com/tomatophp/filament-plugins/blob/master/arts/plugins.png)
-![Tables](https://github.com/tomatophp/filament-plugins/blob/master/arts/tables.png)
-![Generate](https://github.com/tomatophp/filament-plugins/blob/master/arts/generate.png)
-![Create Col](https://github.com/tomatophp/filament-plugins/blob/master/arts/create-col.png)
-![Table cols](https://github.com/tomatophp/filament-plugins/blob/master/arts/table-cols.png)
+![Plugins](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/plugins.png)
+![Tables](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/tables.png)
+![Generate](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/generate.png)
+![Create Col](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/create-col.png)
+![Table cols](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/table-cols.png)
 
 ## Installation
 
