@@ -14,7 +14,7 @@ trait GenerateMigrations
      */
     private function generateMigrations(): void
     {
-        $migrationsPath = module_path($this->moduleName) ."/Database/migrations/";
+        $migrationsPath = module_path($this->moduleName) ."/database/migrations/";
         if(!File::exists($migrationsPath)){
             File::makeDirectory($migrationsPath);
         }
@@ -30,7 +30,7 @@ trait GenerateMigrations
 
         $this->generateStubs(
             $this->stubPath . 'migration.stub',
-            module_path($this->moduleName) ."/Database/migrations/". date('Y_m_d_h_mm_ss') . '_create_' . $this->tableName . '_table.php',
+            module_path($this->moduleName) ."/database/migrations/". date('Y_m_d_h_mm_ss') . '_create_' . $this->tableName . '_table.php',
             [
                 "table" => $this->tableName,
                 "fields" => $this->getFields($this->table->tableCols)
