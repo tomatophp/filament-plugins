@@ -7,7 +7,7 @@ trait GenerateCasts
     private function generateCasts()
     {
         $this->injectString(
-            $this->moduleName ? module_path($this->moduleName) ."/App/Models/{$this->modelName}.php" : app_path("Models/{$this->modelName}.php"),
+            $this->moduleName ? module_path($this->moduleName) ."/app/Models/{$this->modelName}.php" : app_path("Models/{$this->modelName}.php"),
             'protected $fillable =',
             $this->stubPath . "casts.stub",
             [

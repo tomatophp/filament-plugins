@@ -7,7 +7,7 @@ trait GenerateMenus
     private function generateMenus()
     {
         $this->injectString(
-            $this->moduleName ? module_path($this->moduleName) ."/App/Providers/{$this->moduleName}ServiceProvider.php" : app_path("Providers/AppServiceProvider.php"),
+            $this->moduleName ? module_path($this->moduleName) ."/app/Providers/{$this->moduleName}ServiceProvider.php" : app_path("Providers/AppServiceProvider.php"),
             $this->moduleName ? '$this->loadMigrationsFrom(module_path($this->moduleName, \'Database/migrations\'));' :  'public function boot(): void',
             $this->stubPath . "menu.stub",
             [

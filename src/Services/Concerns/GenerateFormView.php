@@ -33,15 +33,15 @@ trait GenerateFormView
     {
         $this->generateStubs(
             $this->stubPath ."FormBuilder/FormClass.stub",
-            $this->moduleName ? module_path($this->moduleName) . "/App/Forms/{$this->modelName}Form.php" : app_path("Forms/{$this->modelName}Form.php"),
+            $this->moduleName ? module_path($this->moduleName) . "/app/Forms/{$this->modelName}Form.php" : app_path("Forms/{$this->modelName}Form.php"),
             [
                 "name" => "{$this->modelName}Form",
                 "route" => str_replace('_', '-', $this->tableName),
                 "cols" => $this->generateFormElements(),
-                "namespace" => $this->moduleName ? "Modules\\" . $this->moduleName . "\\App\\Forms" : "App\\Forms",
+                "namespace" => $this->moduleName ? "Modules\\" . $this->moduleName . "\\Forms" : "App\\Forms",
             ],
             [
-                $this->moduleName ? module_path($this->moduleName) . "/App/Forms" : app_path("Forms")
+                $this->moduleName ? module_path($this->moduleName) . "/app/Forms" : app_path("Forms")
             ]
         );
     }

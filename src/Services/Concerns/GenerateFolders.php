@@ -11,15 +11,15 @@ trait GenerateFolders
     {
         if($this->moduleName){
             $folders = [
-                module_path($this->moduleName) ."/App/Http/Controllers/",
-                module_path($this->moduleName) ."/App/resources/",
-                module_path($this->moduleName) ."/App/Http/Requests/",
-                module_path($this->moduleName) ."/App/Http/Requests/{$this->modelName}",
-                module_path($this->moduleName) ."/App/Models/",
+                module_path($this->moduleName) ."/app/Http/Controllers/",
+                module_path($this->moduleName) ."/app/resources/",
+                module_path($this->moduleName) ."/app/Http/Requests/",
+                module_path($this->moduleName) ."/app/Http/Requests/{$this->modelName}",
+                module_path($this->moduleName) ."/app/Models/",
                 module_path($this->moduleName) . "/resources/views/" . str_replace('_', '-', $this->tableName),
                 module_path($this->moduleName) . "/routes",
-                module_path($this->moduleName)."/App/Tables",
-                module_path($this->moduleName)."/App/Forms",
+                module_path($this->moduleName)."/app/Tables",
+                module_path($this->moduleName)."/app/Forms",
             ];
         }
         else {

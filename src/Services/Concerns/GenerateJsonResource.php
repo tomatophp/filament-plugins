@@ -12,7 +12,7 @@ trait GenerateJsonResource
         $folders = [];
         $resourceName = Str::of($this->tableName)->replace('_', ' ')->camel()->ucfirst()->toString() . 'Resource';
         if($this->moduleName){
-            $folders[] = module_path($this->moduleName) . "/App/resources";
+            $folders[] = module_path($this->moduleName) . "/app/Http/Resources";
         }
         else {
             $folders[] = app_path("Http/Resources");
@@ -20,9 +20,9 @@ trait GenerateJsonResource
 
         $this->generateStubs(
             $this->stubPath . "json.stub",
-            $this->moduleName ? module_path($this->moduleName) . "/App/resources/" . $resourceName . '.php' : app_path("Http/Resources/" . $resourceName . '.php'),
+            $this->moduleName ? module_path($this->moduleName) . "/app/resources/" . $resourceName . '.php' : app_path("Http/Resources/" . $resourceName . '.php'),
             [
-                "namespace" => $this->moduleName ? "Modules\\".$this->moduleName."\\App\\resources" : "App\\Http\\Resources",
+                "namespace" => $this->moduleName ? "Modules\\".$this->moduleName."\\Http\\Resources" : "App\\Http\\Resources",
                 "name" => $resourceName,
                 "fields" => $this->generateFields(),
                 "table" => str_replace('_', '-', $this->tableName),
