@@ -6,6 +6,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Nwidart\Modules\Facades\Module;
 use TomatoPHP\FilamentPlugins\Resources\TableResource\Pages;
 use TomatoPHP\FilamentPlugins\Resources\TableResource\RelationManagers;
@@ -141,7 +142,7 @@ class TableResource extends Resource
                             return;
                         }
 
-                        $checkIfModelExists = File::exists(module_path($record->module, '/app/Models/' . str($record->name)->title()->singular() . '.php'));
+                        $checkIfModelExists = File::exists(module_path($record->module, '/app/Models/' . Str::ucfirst(Str::singular(Str::camel($record->name))) . '.php'));
 
 
                         if((!$checkIfModelExists) && in_array($data['type'], ['resource', 'page', 'widget'])){
