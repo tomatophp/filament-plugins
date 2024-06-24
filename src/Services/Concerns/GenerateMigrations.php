@@ -65,7 +65,7 @@ trait GenerateMigrations
                 }
             }
             else {
-                $finalFields .= '$table->'. ($field->type == 'varchar' ? 'string' : $field->type === 'int' ? 'integer' : $field->type) .'("'.$field->name.'")';
+                $finalFields .= '$table->'. ($field->type == 'varchar' ? 'string' : ($field->type === 'int' ? 'integer' : $field->type)) .'("'.$field->name.'")';
             }
 
 
