@@ -43,7 +43,11 @@ return [
             'import' => [
                 'title' => 'Success',
                 'body' => 'The plugin has been imported successfully.'
-            ]
+            ],
+            'created' => [
+                'title' => 'Success',
+                'body' => 'The plugin has been created successfully.'
+            ],
         ]
     ],
     'tables' => [

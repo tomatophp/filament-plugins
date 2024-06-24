@@ -43,7 +43,11 @@ return [
             'import' => [
                 'title' => 'Success',
                 'body' => 'The plugin has been imported successfully.'
-            ]
+            ],
+            'created' => [
+                'title' => 'Success',
+                'body' => 'The plugin has been created successfully.'
+            ],
         ]
     ],
     'tables' => [
@@ -53,6 +57,8 @@ return [
         'columns' => 'Table Columns',
         'form' => [
             'name' => 'Name',
+            'soft_deletes' => 'Allow Soft Delete',
+            'timestamps' => 'Allow Timestamps',
             'type' => 'Type',
             'nullable' => 'Nullable',
             'foreign' => 'Foreign',
@@ -73,7 +79,7 @@ return [
         ],
         'actions' => [
             'create' => 'Create Table',
-            'migrate' => 'Migrate',
+            'migrate' => 'Create Migration',
             'generate' => 'Generate',
             'columns' => 'Add Column',
             'add-id' => 'Add ID Column',

@@ -105,7 +105,7 @@ class TableColsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->reorderable('id')
+            ->reorderable('order')
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
@@ -156,41 +156,6 @@ class TableColsRelationManager extends RelationManager
                                 'primary' => true,
                             ]);
                         }),
-                    Tables\Actions\Action::make('timestamps')
-                        ->color('info')
-                        ->requiresConfirmation()
-                        ->icon('heroicon-s-plus')
-                        ->label(trans('filament-plugins::messages.tables.actions.add-timestamps'))
-                        ->action(function () {
-                            $this->ownerRecord->tableCols()->createMany(
-                                [
-                                    [
-                                        'name' => 'created_at',
-                                        'type' => 'datetime',
-                                        'nullable' => true,
-                                    ],
-                                    [
-                                        'name' => 'updated_at',
-                                        'type' => 'datetime',
-                                        'nullable' => true,
-                                    ],
-                                ]
-                            );
-                        }),
-                    Tables\Actions\Action::make('soft_deletes')
-                        ->color('info')
-                        ->requiresConfirmation()
-                        ->icon('heroicon-s-plus')
-                        ->label(trans('filament-plugins::messages.tables.actions.add-softdeletes'))
-                        ->action(function () {
-                            $this->ownerRecord->tableCols()->create(
-                                [
-                                    'name' => 'deleted_at',
-                                    'type' => 'datetime',
-                                    'nullable' => true,
-                                ]
-                            );
-                        })
                 ]),
 
 
@@ -199,6 +164,7 @@ class TableColsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
+            ->defaultSort('order')
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

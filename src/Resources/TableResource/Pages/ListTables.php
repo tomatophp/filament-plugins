@@ -15,6 +15,13 @@ class ListTables extends ListRecords
         return trans('filament-plugins::messages.tables.title');
     }
 
+    public function mount(): void
+    {
+        if(!request()->has('module')){
+            $this->redirect(route('filament.'.filament()->getCurrentPanel()->getId().'.pages.plugins'));
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [

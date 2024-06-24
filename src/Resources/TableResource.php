@@ -37,6 +37,12 @@ class TableResource extends Resource
                     ->columnSpan(2)
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Toggle::make('timestamps')
+                    ->label(trans('filament-plugins::messages.tables.form.timestamps'))
+                    ->default(true),
+                Forms\Components\Toggle::make('soft_deletes')
+                    ->default(0)
+                    ->label(trans('filament-plugins::messages.tables.form.soft_deletes'))
             ])->viewData([
                 'module' => request()->get('module'),
             ]);

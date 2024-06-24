@@ -30,4 +30,16 @@ class CreateTable extends CreateRecord
         $data['module'] = $this->module;
         return $data;
     }
+
+    protected function afterCreate(): void
+    {
+        $this->getRecord()->tableCols()->create([
+            'name' => 'id',
+            'type' => 'bigint',
+            'unsigned' => true,
+            'auto_increment' => true,
+            'primary' => true
+        ]);
+    }
+
 }

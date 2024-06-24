@@ -225,8 +225,8 @@ class Plugins extends Page implements HasTable
         $generator->generate();
 
         Notification::make()
-            ->title(trans('filament-plugins::messages.plugins.notification.imported.title'))
-            ->body(trans('filament-plugins::messages.plugins.notification.imported.body'))
+            ->title(trans('filament-plugins::messages.plugins.notification.created.title'))
+            ->body(trans('filament-plugins::messages.plugins.notification.created.body'))
             ->success()
             ->send();
     }

@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tables');
+        Schema::dropIfExists(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_tables' : 'tables');
     }
 };

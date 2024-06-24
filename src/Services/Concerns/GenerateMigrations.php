@@ -33,7 +33,7 @@ trait GenerateMigrations
             module_path($this->moduleName) ."/database/migrations/". date('Y_m_d_h_mm_ss') . '_create_' . $this->tableName . '_table.php',
             [
                 "table" => $this->tableName,
-                "fields" => $this->getFields($this->table->tableCols)
+                "fields" => $this->getFields($this->table->tableCols()->orderBy('order')->get())
             ],
         );
     }
@@ -78,6 +78,10 @@ trait GenerateMigrations
                 }
             }
 
+            if(isset($field->unsigned) && $field->unsigned && $field->name !== 'id' && !in_array($field->type, ['string', 'text', 'longText', 'json'])){
+                $finalFields .= "->unsigned()";
+            }
+
             if(isset($field->nullable) && $field->nullable){
                 $finalFields .= "->nullable()";
             }
@@ -85,10 +89,6 @@ trait GenerateMigrations
 
             if(isset($field->unique) && $field->unique){
                 $finalFields .= "->unique()";
-            }
-
-            if(isset($field->unsigned) && $field->unsigned && $field->name !== 'id'){
-                $finalFields .= "->unsigned()";
             }
 
             if(isset($field->comment)){

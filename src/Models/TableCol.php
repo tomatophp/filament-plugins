@@ -32,7 +32,7 @@ class TableCol extends Model
     /**
      * @var array
      */
-    protected $fillable = ['table_id', 'name', 'type', 'length', 'default', 'comment', 'foreign_table', 'foreign_col', 'foreign_model', 'nullable', 'index', 'auto_increment', 'primary', 'unique', 'unsigned', 'foreign', 'foreign_on_delete_cascade', 'created_at', 'updated_at'];
+    protected $fillable = ['order','table_id', 'name', 'type', 'length', 'default', 'comment', 'foreign_table', 'foreign_col', 'foreign_model', 'nullable', 'index', 'auto_increment', 'primary', 'unique', 'unsigned', 'foreign', 'foreign_on_delete_cascade', 'created_at', 'updated_at'];
 
     protected $casts = [
         'nullable' => 'boolean',
