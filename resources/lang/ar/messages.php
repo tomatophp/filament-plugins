@@ -24,6 +24,10 @@ return [
             'docs' => 'عن الاضافة',
         ],
         'notifications' => [
+            'exists' => [
+                'title' => 'خطأ',
+                'body' => 'الاضافة موجودة بالفعل'
+            ],
             'autoload' => [
                 'title' => 'خطأ',
                 'body' => 'عفواً لا يمكن تفعيل هذه الاضافة قبل تشغيل الامر composer dump-autoload في الطرفية'

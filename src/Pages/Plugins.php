@@ -76,8 +76,8 @@ class Plugins extends Page implements HasTable
                 $module?->disable();
 
                 Notification::make()
-                    ->title(trans('filament-plugins::messages.plugins.notifications.disabled.title'))
-                    ->body(trans('filament-plugins::messages.plugins.notifications.disabled.body'))
+                    ->title(trans('filament-plugins::messages.plugins.notificationss.disabled.title'))
+                    ->body(trans('filament-plugins::messages.plugins.notificationss.disabled.body'))
                     ->success()
                     ->send();
 
@@ -98,8 +98,8 @@ class Plugins extends Page implements HasTable
                 $module?->delete();
 
                 Notification::make()
-                    ->title(trans('filament-plugins::messages.plugins.notifications.deleted.title'))
-                    ->body(trans('filament-plugins::messages.plugins.notifications.deleted.body'))
+                    ->title(trans('filament-plugins::messages.plugins.notificationss.deleted.title'))
+                    ->body(trans('filament-plugins::messages.plugins.notificationss.deleted.body'))
                     ->success()
                     ->send();
 
@@ -119,8 +119,8 @@ class Plugins extends Page implements HasTable
             ->action(function (array $arguments) {
                 if(!class_exists(json_decode($arguments['item']['providers'])[0])){
                     Notification::make()
-                        ->title(trans('filament-plugins::messages.plugins.notifications.autoload.title'))
-                        ->body(trans('filament-plugins::messages.plugins.notifications.autoload.body'))
+                        ->title(trans('filament-plugins::messages.plugins.notificationss.autoload.title'))
+                        ->body(trans('filament-plugins::messages.plugins.notificationss.autoload.body'))
                         ->danger()
                         ->send();
                     return;
@@ -129,8 +129,8 @@ class Plugins extends Page implements HasTable
                 $module?->enable();
 
                 Notification::make()
-                    ->title(trans('filament-plugins::messages.plugins.notifications.enabled.title'))
-                    ->body(trans('filament-plugins::messages.plugins.notifications.enabled.body'))
+                    ->title(trans('filament-plugins::messages.plugins.notificationss.enabled.title'))
+                    ->body(trans('filament-plugins::messages.plugins.notificationss.enabled.body'))
                     ->success()
                     ->send();
 
@@ -195,8 +195,8 @@ class Plugins extends Page implements HasTable
             $zip->close();
 
             Notification::make()
-                ->title(trans('filament-plugins::messages.plugins.notifications.import.title'))
-                ->body(trans('filament-plugins::messages.plugins.notifications.import.body'))
+                ->title(trans('filament-plugins::messages.plugins.notificationss.import.title'))
+                ->body(trans('filament-plugins::messages.plugins.notificationss.import.body'))
                 ->success()
                 ->send();
 
@@ -210,10 +210,11 @@ class Plugins extends Page implements HasTable
         $checkIfPluginExists = Module::find(Str::of($data['name'])->camel()->ucfirst()->toString());
         if($checkIfPluginExists){
             Notification::make()
-                ->title(trans('filament-plugins::messages.plugins.notification.exists.title'))
-                ->body(trans('filament-plugins::messages.plugins.notification.exists.body'))
+                ->title(trans('filament-plugins::messages.plugins.notifications.exists.title'))
+                ->body(trans('filament-plugins::messages.plugins.notifications.exists.body'))
                 ->danger()
                 ->send();
+            return;
         }
 
         $generator = new PluginGenerator(
@@ -225,8 +226,8 @@ class Plugins extends Page implements HasTable
         $generator->generate();
 
         Notification::make()
-            ->title(trans('filament-plugins::messages.plugins.notification.created.title'))
-            ->body(trans('filament-plugins::messages.plugins.notification.created.body'))
+            ->title(trans('filament-plugins::messages.plugins.notifications.created.title'))
+            ->body(trans('filament-plugins::messages.plugins.notifications.created.body'))
             ->success()
             ->send();
     }

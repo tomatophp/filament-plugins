@@ -24,6 +24,10 @@ return [
            'docs' => 'Docs',
        ],
         'notifications' => [
+            'exists' => [
+                'title' => 'Error',
+                'body' => 'The plugin already exists.'
+            ],
             'autoload' => [
                 'title' => 'Error',
                 'body' => 'The plugin could not be activated because the class could not be found. please run composer dump-autoload on your terminal'
@@ -52,6 +56,7 @@ return [
     ],
     'tables' => [
         'title' => 'Tables',
+        'single' => 'Table',
         'create' => 'Create Table',
         'edit' => 'Edit Table',
         'columns' => 'Table Columns',

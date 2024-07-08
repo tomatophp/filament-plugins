@@ -24,6 +24,10 @@ return [
             'docs' => 'Docs',
         ],
         'notifications' => [
+            'exists' => [
+                'title' => 'Error',
+                'body' => 'The plugin already exists.'
+            ],
             'autoload' => [
                 'title' => 'Error',
                 'body' => 'The plugin could not be activated because the class could not be found. please run composer dump-autoload on your terminal'
