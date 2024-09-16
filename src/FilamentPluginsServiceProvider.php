@@ -3,6 +3,7 @@
 namespace TomatoPHP\FilamentPlugins;
 
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Laravel\Module;
 
@@ -19,6 +20,7 @@ class FilamentPluginsServiceProvider extends ServiceProvider
            \TomatoPHP\FilamentPlugins\Console\FilamentWidgetGenerate::class,
            \TomatoPHP\FilamentPlugins\Console\FilamentPluginsGenerate::class,
            \TomatoPHP\FilamentPlugins\Console\FilamentPluginsModel::class,
+           \TomatoPHP\FilamentPlugins\Console\FilamentPublishModule::class,
         ]);
 
         //Register Config file
@@ -56,6 +58,7 @@ class FilamentPluginsServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         $this->registerModuleMacros();
+
     }
 
     public function boot(): void
@@ -83,10 +86,21 @@ class FilamentPluginsServiceProvider extends ServiceProvider
             $relativeNamespace = trim($relativeNamespace, '\\');
             $relativeNamespace = $relativeNamespace;
 
-            return $this->namespace($relativeNamespace);
+            $dir = File::directories($this->getPath());
+            $appPath = $this->namespace($relativeNamespace);
+            if(in_array($this->getPath() . '/src', $dir)){
+                $info = json_decode(File::get($this->getPath() . '/module.json'));
+                $appPath =  str($this->namespace($relativeNamespace))->replace('Modules', str($info->providers[0])->explode('\\')->first())->toString();
+            }
+
+            return $appPath;
         });
         Module::macro('appPath', function (string $relativePath = '') {
+            $dir = File::directories($this->getPath());
             $appPath = $this->getExtraPath('app');
+            if(in_array($this->getPath() . '/src', $dir)){
+                $appPath =  $this->getPath() . '/src';
+            }
 
             return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
@@ -120,6 +134,7 @@ class FilamentPluginsServiceProvider extends ServiceProvider
 
             return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
+
     }
 
 }

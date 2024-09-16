@@ -24,6 +24,11 @@ class FilamentWidgetGenerate extends MakeWidgetCommand
         $moduleName = $this->argument('module') ?? text('In which Module should we create this?', 'e.g Blog', required: true);
         $moduleStudlyName = str($moduleName)->studly()->toString();
         $module = Module::find($moduleName);
+        $appPath = 'app';
+        $moduleDir = File::directories($module->getPath());
+        if(in_array($module->getPath() .'/src', $moduleDir)){
+            $appPath = 'src';
+        }
         $widget = (string) str($this->argument('name') ?? text(
             label: 'What is the widget name?',
             placeholder: 'BlogPostsChart',
@@ -118,13 +123,13 @@ class FilamentWidgetGenerate extends MakeWidgetCommand
             //Create Directory For Selected Panel in Module If Not Exists
             if(count($widgetDirectories) < 1 && count($widgetNamespaces) < 1){
                 $modulePath = module_path($moduleName);
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+                if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()))){
+                    File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()));
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Widgets')){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Widgets');
+                if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Widgets')){
+                    File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Widgets');
                 }
-                $widgetDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Widgets';
+                $widgetDirectories[] = $modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Widgets';
                 $widgetNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Widgets';
             }
 
@@ -144,20 +149,20 @@ class FilamentWidgetGenerate extends MakeWidgetCommand
             //Create Directory For Selected Panel in Module If Not Exists
             if(count($resourceDirectories) < 1 && count($resourceNamespaces) < 1){
                 $modulePath = module_path($moduleName);
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+                if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()))){
+                    File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()));
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource')){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource');
+                if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resource')){
+                    File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resource');
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource)){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource);
+                if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource)){
+                    File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource);
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Widgets')){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Widgets');
+                if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Widgets')){
+                    File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Widgets');
                 }
 
-                $resourceDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Widgets';
+                $resourceDirectories[] = $modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Widgets';
                 $resourceNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Resource\\'.$resource.'\\Widgets';
             }
 

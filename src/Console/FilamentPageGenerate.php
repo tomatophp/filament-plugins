@@ -28,6 +28,14 @@ class FilamentPageGenerate extends MakePageCommand
         $moduleName = $this->argument('module') ?? text('In which Module should we create the page?', 'e.g Blog', required: true);
         $moduleStudlyName = str($moduleName)->studly()->toString();
         $module = Module::find($moduleName);
+
+        $module = Module::find($moduleName);
+        $appPath = 'app';
+        $moduleDir = File::directories($module->getPath());
+        if(in_array($module->getPath() .'/src', $moduleDir)){
+            $appPath = 'src';
+        }
+
         $page = (string) str(
             $this->argument('name') ??
             text(
@@ -197,13 +205,13 @@ class FilamentPageGenerate extends MakePageCommand
             //Create Directory For Selected Panel in Module If Not Exists
             if(count($pageDirectories) < 1 && count($pageNamespaces) < 1){
                 $modulePath = module_path($moduleName);
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+                if(!File::exists($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()))){
+                    File::makeDirectory($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()));
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Pages')){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Pages');
+                if(!File::exists($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Pages')){
+                    File::makeDirectory($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Pages');
                 }
-                $pageDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Pages';
+                $pageDirectories[] = $modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Pages';
                 $pageNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Pages';
             }
 
@@ -224,20 +232,20 @@ class FilamentPageGenerate extends MakePageCommand
             //Create Directory For Selected Panel in Module If Not Exists
             if(count($resourceDirectories) < 1 && count($resourceNamespaces) < 1){
                 $modulePath = module_path($moduleName);
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+                if(!File::exists($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()))){
+                    File::makeDirectory($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()));
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource')){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource');
+                if(!File::exists($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Resource')){
+                    File::makeDirectory($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Resource');
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource)){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource);
+                if(!File::exists($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource)){
+                    File::makeDirectory($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource);
                 }
-                if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages')){
-                    File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages');
+                if(!File::exists($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages')){
+                    File::makeDirectory($modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages');
                 }
 
-                $resourceDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages';
+                $resourceDirectories[] = $modulePath . '/'.$appPath . '/Filament/'.Str::studly($panel->getId()).'/Resource/'.$resource.'/Pages';
                 $resourceNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Resource\\'.$resource.'\\Pages';
             }
 

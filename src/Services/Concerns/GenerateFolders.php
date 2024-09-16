@@ -4,36 +4,30 @@ namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Nwidart\Modules\Facades\Module;
 
 trait GenerateFolders
 {
     private function generateFolders(): void
     {
+        $module = Module::find($this->moduleName);
+        $appPath = 'app';
+        $moduleDir = File::directories($module->getPath());
+        if(in_array($module->getPath() .'/src', $moduleDir)){
+            $appPath = 'src';
+        }
+
         if($this->moduleName){
             $folders = [
-                module_path($this->moduleName) ."/app/Http/Controllers/",
-                module_path($this->moduleName) ."/app/resources/",
-                module_path($this->moduleName) ."/app/Http/Requests/",
-                module_path($this->moduleName) ."/app/Http/Requests/{$this->modelName}",
-                module_path($this->moduleName) ."/app/Models/",
-                module_path($this->moduleName) . "/resources/views/" . str_replace('_', '-', $this->tableName),
-                module_path($this->moduleName) . "/routes",
-                module_path($this->moduleName)."/app/Tables",
-                module_path($this->moduleName)."/app/Forms",
-            ];
-        }
-        else {
-            $folders = [
-                app_path("Http/Controllers") . "/Admin",
-                app_path("Http/Resources"),
-                app_path("Http/Requests"),
-                app_path("Http/Requests/Admin"),
-                app_path("Http/Requests/Admin/{$this->modelName}"),
-                app_path("Http/Resources") . "/Admin",
-                resource_path("views") . '/admin',
-                resource_path("views") . '/admin/' . str_replace('_', '-', $this->tableName),
-                base_path("routes"),
-                app_path("Tables")
+//                module_path($this->moduleName) .'/'.$appPath . "/Http/Controllers/",
+//                module_path($this->moduleName) .'/'.$appPath . "/resources/",
+//                module_path($this->moduleName) .'/'.$appPath . "/Http/Requests/",
+//                module_path($this->moduleName) .'/'.$appPath . "/Http/Requests/{$this->modelName}",
+                module_path($this->moduleName) .'/'.$appPath . "/Models/",
+//                module_path($this->moduleName) . "/resources/views/" . str_replace('_', '-', $this->tableName),
+//                module_path($this->moduleName) . "/routes",
+//                module_path($this->moduleName).'/'.$appPath . "/Tables",
+//                module_path($this->moduleName).'/'.$appPath . "/Forms",
             ];
         }
 

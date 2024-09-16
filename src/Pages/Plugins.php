@@ -24,6 +24,7 @@ use Nwidart\Modules\Facades\Module;
 use TomatoPHP\FilamentIcons\Components\IconPicker;
 use TomatoPHP\FilamentPlugins\Models\Plugin;
 use TomatoPHP\FilamentPlugins\Services\PluginGenerator;
+use TomatoPHP\FilamentPlugins\Services\PublishPackage;
 
 class Plugins extends Page implements HasTable
 {
@@ -39,7 +40,7 @@ class Plugins extends Page implements HasTable
         return trans('filament-plugins::messages.plugins.title');
     }
 
-     public static function getNavigationLabel(): string
+    public static function getNavigationLabel(): string
      {
          return trans('filament-plugins::messages.plugins.title');
      }
@@ -76,8 +77,8 @@ class Plugins extends Page implements HasTable
                 $module?->disable();
 
                 Notification::make()
-                    ->title(trans('filament-plugins::messages.plugins.notificationss.disabled.title'))
-                    ->body(trans('filament-plugins::messages.plugins.notificationss.disabled.body'))
+                    ->title(trans('filament-plugins::messages.plugins.notifications.disabled.title'))
+                    ->body(trans('filament-plugins::messages.plugins.notifications.disabled.body'))
                     ->success()
                     ->send();
 
@@ -88,6 +89,15 @@ class Plugins extends Page implements HasTable
     public function deleteAction(): Action
     {
         return Action::make('delete')
+            ->visible(function (array $arguments) {
+                $module = Module::find($arguments['item']['module_name']);
+                if(str($module->getPath())->contains('vendor')){
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            })
             ->iconButton()
             ->icon('heroicon-s-trash')
             ->color('danger')
@@ -98,15 +108,14 @@ class Plugins extends Page implements HasTable
                 $module?->delete();
 
                 Notification::make()
-                    ->title(trans('filament-plugins::messages.plugins.notificationss.deleted.title'))
-                    ->body(trans('filament-plugins::messages.plugins.notificationss.deleted.body'))
+                    ->title(trans('filament-plugins::messages.plugins.notifications.deleted.title'))
+                    ->body(trans('filament-plugins::messages.plugins.notifications.deleted.body'))
                     ->success()
                     ->send();
 
                 $this->js('window.location.reload()');
             });
     }
-
 
     public function activeAction(): Action
     {
@@ -119,8 +128,8 @@ class Plugins extends Page implements HasTable
             ->action(function (array $arguments) {
                 if(!class_exists(json_decode($arguments['item']['providers'])[0])){
                     Notification::make()
-                        ->title(trans('filament-plugins::messages.plugins.notificationss.autoload.title'))
-                        ->body(trans('filament-plugins::messages.plugins.notificationss.autoload.body'))
+                        ->title(trans('filament-plugins::messages.plugins.notifications.autoload.title'))
+                        ->body(trans('filament-plugins::messages.plugins.notifications.autoload.body'))
                         ->danger()
                         ->send();
                     return;
@@ -129,8 +138,8 @@ class Plugins extends Page implements HasTable
                 $module?->enable();
 
                 Notification::make()
-                    ->title(trans('filament-plugins::messages.plugins.notificationss.enabled.title'))
-                    ->body(trans('filament-plugins::messages.plugins.notificationss.enabled.body'))
+                    ->title(trans('filament-plugins::messages.plugins.notifications.enabled.title'))
+                    ->body(trans('filament-plugins::messages.plugins.notifications.enabled.body'))
                     ->success()
                     ->send();
 
@@ -195,8 +204,8 @@ class Plugins extends Page implements HasTable
             $zip->close();
 
             Notification::make()
-                ->title(trans('filament-plugins::messages.plugins.notificationss.import.title'))
-                ->body(trans('filament-plugins::messages.plugins.notificationss.import.body'))
+                ->title(trans('filament-plugins::messages.plugins.notifications.import.title'))
+                ->body(trans('filament-plugins::messages.plugins.notifications.import.body'))
                 ->success()
                 ->send();
 

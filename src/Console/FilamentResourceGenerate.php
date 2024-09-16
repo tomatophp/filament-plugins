@@ -37,6 +37,11 @@ class FilamentResourceGenerate extends Command
         $moduleName = $this->argument('module') ?? text('In which Module should we create the resource?', 'e.g Blog', required: true);
         $moduleStudlyName = str($moduleName)->studly()->toString();
         $module = Module::find($moduleName);
+        $appPath = 'app';
+        $moduleDir = File::directories($module->getPath());
+        if(in_array($module->getPath() .'/src', $moduleDir)){
+            $appPath = 'src';
+        }
         $modelNamespace = $this->option('model-namespace') ?? $module->appNamespace('Models');
         $modelNamespace = str($modelNamespace)->rtrim('\\')->toString();
 
@@ -91,13 +96,13 @@ class FilamentResourceGenerate extends Command
         //Create Directory For Selected Panel in Module If Not Exists
         if(count($resourceDirectories) < 1 && count($resourceNamespaces) < 1){
             $modulePath = module_path($moduleName);
-            if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()))){
-                File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()));
+            if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()))){
+                File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()));
             }
-            if(!File::exists($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resources')){
-                File::makeDirectory($modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resources');
+            if(!File::exists($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resources')){
+                File::makeDirectory($modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resources');
             }
-            $resourceDirectories[] = $modulePath . '/app/Filament/'.Str::studly($panel->getId()).'/Resources';
+            $resourceDirectories[] = $modulePath . '/'.$appPath . '//Filament/'.Str::studly($panel->getId()).'/Resources';
             $resourceNamespaces[] = $module->appNamespace().'\\Filament\\'.Str::studly($panel->getId()).'\\Resources';
         }
 

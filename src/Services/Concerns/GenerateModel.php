@@ -3,6 +3,8 @@
 namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
+use Nwidart\Modules\Facades\Module;
 
 trait GenerateModel
 {
@@ -15,18 +17,29 @@ trait GenerateModel
         $modelName = $this->modelName;
         $filePath = "";
 
+        $module = Module::find($this->moduleName);
+        $appPath = 'app';
+        $moduleDir = File::directories($module->getPath());
+        if(in_array($module->getPath() .'/src', $moduleDir)){
+            $appPath = 'src';
+        }
+
         if($this->moduleName){
-            if(file_exists(module_path($this->moduleName) . '/app/Models/'. $this->modelName . '.php')){
+            if(file_exists(module_path($this->moduleName) . '/'.$appPath . '/Models/'. $this->modelName . '.php')){
                 $exists = true;
             }
 
-            $namespace = "Modules\\{$this->moduleName}\\Models";
-            $filePath = module_path($this->moduleName) . '/app/Models/'. $this->modelName . '.php';
-        }
-        else if(file_exists(app_path("Models/{$this->modelName}.php"))){
-            $exists = true;
-            $namespace = "App\\Models";
-            $filePath = app_path("Models/{$this->modelName}.php");
+            if($appPath === 'src'){
+                $info = json_decode(File::get(module_path($this->moduleName) . '/module.json'));
+                $namespaceStart = str($info->providers[0])->explode('\\')->first();
+
+                $namespace = $namespaceStart . "\\{$this->moduleName}\\Models";
+            }
+            else {
+                $namespace = "Modules\\{$this->moduleName}\\Models";
+            }
+
+            $filePath = module_path($this->moduleName) . '/'.$appPath . '/Models/'. $this->modelName . '.php';
         }
 
         if(!$exists){
@@ -44,7 +57,7 @@ trait GenerateModel
                     "methods" => $this->getMethods(),
                 ],
                 [
-                    $this->moduleName ? module_path($this->moduleName) . '/app/Models/' : app_path("Models")
+                    $this->moduleName ? module_path($this->moduleName) . '/'.$appPath . '/Models/' : app_path("Models")
                 ]
             );
 

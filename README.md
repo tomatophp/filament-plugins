@@ -82,7 +82,7 @@ it will generate the files for you and you can use it directly, please note that
 
 ## List your package on the plugins list
 
-you can list your package on the plugins list by adding this a json file in your package root folder with name `filament-plugin.json` with content like this:
+you can list your package on the plugins list by adding this a json file in your package root folder with name `module.json` with content like this:
 
 ```json
 {
@@ -121,6 +121,14 @@ make sure you allow packages scan on the `filament-plugins.php` config file
 ```php
 'scan' => true
 ```
+
+now you can publish your package as module with the very easy way use this command
+
+```php
+php artisan filament-plugins:publish
+```
+
+and input your package name from the list and it will move it to your module folder and register the provider to you, so you can custom anything you like on the package.
 
 ## Use Selected Module in your panel
 

@@ -29,7 +29,7 @@
             <div class="flex justifiy-between gap-1 my-4 px-4 border-t border-gray-100 dark:border-gray-700 pt-4">
                 <div class="flex justifiy-start w-full gap-2">
                     @if($item['type'] !== 'lib')
-                        @if((bool)config('filament-plugins.allow_generator'))
+                        @if(((bool)config('filament-plugins.allow_generator') ) && !str(module_path($item['module_name']))->contains('vendor'))
                             <x-filament::icon-button :tooltip="trans('filament-plugins::messages.plugins.actions.generate')" tag="a" href="{{route('filament.'.filament()->getCurrentPanel()->getId().'.resources.tables.index', ['module'=>$item->module_name])}}">
                                 <x-slot name="icon">
                                     <x-heroicon-s-cog class="w-5 h-5" />

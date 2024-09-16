@@ -34,7 +34,8 @@ class FilamentPluginsPlugin implements Plugin
         foreach ($plugins as $plugin){
             if($plugin->type === 'plugin' && in_array($plugin->module_name, $this->modules)){
                 $module = Module::find($plugin->module_name);
-                if($module->isEnabled()){
+                $dir = File::directories($module->getPath());
+                if($module->isEnabled() && !in_array($module->getPath() . DIRECTORY_SEPARATOR . 'src', $dir)){
                     $checkIfThereIsDirectoryForThisPanel = File::exists($module->appPath('Filament' . DIRECTORY_SEPARATOR . Str::studly($panel->getId())));
                     if($checkIfThereIsDirectoryForThisPanel && $this->discoverCurrentPanelOnly){
                         $panel->discoverPages(
@@ -92,7 +93,6 @@ class FilamentPluginsPlugin implements Plugin
                             );
                         }
                     }
-
                 }
             }
         }

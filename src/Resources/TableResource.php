@@ -161,7 +161,14 @@ class TableResource extends Resource
                             return;
                         }
 
-                        $checkIfModelExists = File::exists(module_path($record->module, '/app/Models/' . Str::ucfirst(Str::singular(Str::camel($record->name))) . '.php'));
+                        $module = Module::find($record->module);
+                        $appPath = 'app';
+                        $moduleDir = File::directories($module->getPath());
+                        if(in_array($module->getPath() .'/src', $moduleDir)){
+                            $appPath = 'src';
+                        }
+
+                        $checkIfModelExists = File::exists(module_path($record->module, '/'.$appPath.'/Models/' . Str::ucfirst(Str::singular(Str::camel($record->name))) . '.php'));
 
 
                         if((!$checkIfModelExists) && in_array($data['type'], ['resource', 'page', 'widget'])){
