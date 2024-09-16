@@ -57,6 +57,12 @@ class Plugins extends Page implements HasTable
             ->content(function () {
                 return view('filament-plugins::pages.table');
             })
+            ->paginationPageOptions([
+                9,
+                18,
+                36,
+                72,
+            ])
             ->columns([
                 TextColumn::make('name')
                     ->label(trans('filament-plugins::messages.plugins.form.name'))
