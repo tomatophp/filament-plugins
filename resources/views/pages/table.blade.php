@@ -1,5 +1,13 @@
+
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
     @foreach($records as $item)
+        @php
+            $urlParams = ['module' => $item->module_name];
+            if ((bool) filament()->hasTenancy()) {
+               $urlParams['tenant'] = filament()->getTenant();
+            }
+        @endphp
+
         <div class="bg-white border border-gray-100 dark:border-gray-700 overflow-hidden dark:bg-gray-800 rounded-lg flex flex-col shadow-sm" >
 
             @if($item['placeholder'] !== 'placeholder.webp')
@@ -30,7 +38,7 @@
                 <div class="flex justifiy-start w-full gap-2">
                     @if($item['type'] !== 'lib')
                         @if(((bool)config('filament-plugins.allow_generator') ) && !str(module_path($item['module_name']))->contains('vendor'))
-                            <x-filament::icon-button :tooltip="trans('filament-plugins::messages.plugins.actions.generate')" tag="a" href="{{route('filament.'.filament()->getCurrentPanel()->getId().'.resources.tables.index', ['module'=>$item->module_name])}}">
+                            <x-filament::icon-button :tooltip="trans('filament-plugins::messages.plugins.actions.generate')" tag="a" href="{{route('filament.'.filament()->getCurrentPanel()->getId().'.resources.tables.index', $urlParams)}}">
                                 <x-slot name="icon">
                                     <x-heroicon-s-cog class="w-5 h-5" />
                                 </x-slot>
