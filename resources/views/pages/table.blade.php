@@ -15,7 +15,7 @@
                     <img class="bg-cover bg-center" onerror="this.onerror=null; this.src='{{url('placeholder.webp')}}'" src="{{$item['placeholder']}}" />
                 </div>
             @else
-                <div class="overflow-hidden flex flex-col rounded-t-lg justify-center items-center" style="background-color: {{$item['color']}}; height: 150px;">
+                <div class="overflow-hidden flex flex-col rounded-t-lg justify-center items-center h-full" style="background-color: {{$item['color']}}; ">
                     <div>
                         <x-icon name="{{$item['icon']}}" class="text-white w-12 h-16" />
                     </div>
