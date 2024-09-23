@@ -4,6 +4,7 @@ namespace TomatoPHP\FilamentPlugins\Pages;
 
 use Composer\Autoload\ClassLoader;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
@@ -72,7 +73,7 @@ class Plugins extends Page implements HasTable
 
     public function disableAction(): Action
     {
-        return Action::make('disable')
+        return Action::make('disableAction')
             ->iconButton()
             ->icon('heroicon-s-x-circle')
             ->color('danger')
@@ -88,13 +89,14 @@ class Plugins extends Page implements HasTable
                     ->success()
                     ->send();
 
-                $this->js('window.location.reload()');
+                $this->redirect(static::getUrl());
+
             });
     }
 
     public function deleteAction(): Action
     {
-        return Action::make('delete')
+        return Action::make('deleteAction')
             ->visible(function (array $arguments) {
                 $module = Module::find($arguments['item']['module_name']);
                 if(str($module->getPath())->contains('vendor')){
@@ -119,13 +121,13 @@ class Plugins extends Page implements HasTable
                     ->success()
                     ->send();
 
-                $this->js('window.location.reload()');
+                $this->redirect(static::getUrl());
             });
     }
 
     public function activeAction(): Action
     {
-        return Action::make('active')
+        return Action::make('activeAction')
             ->iconButton()
             ->icon('heroicon-s-check-circle')
             ->tooltip(trans('filament-plugins::messages.plugins.actions.active'))
@@ -149,7 +151,7 @@ class Plugins extends Page implements HasTable
                     ->success()
                     ->send();
 
-                $this->js('window.location.reload()');
+                $this->redirect(static::getUrl());
 
             });
     }
@@ -178,17 +180,33 @@ class Plugins extends Page implements HasTable
                             ->required()
                     ])
                     ->action(fn (array $data) => $this->createPlugin($data)),
-                Action::make('import')
-                    ->label(trans('filament-plugins::messages.plugins.import'))
-                    ->icon('heroicon-o-arrow-up-on-square')
-                    ->form([
-                        FileUpload::make('file')
-                            ->label(trans('filament-plugins::messages.plugins.form.file'))
-                            ->acceptedFileTypes(['application/zip'])
-                            ->required()
-                            ->storeFiles(false)
-                    ])
-                    ->action(fn (array $data) => $this->importPlugin($data)),
+                ActionGroup::make([
+                    Action::make('import')
+                        ->label(trans('filament-plugins::messages.plugins.import'))
+                        ->icon('heroicon-o-arrow-up-on-square')
+                        ->form([
+                            FileUpload::make('file')
+                                ->label(trans('filament-plugins::messages.plugins.form.file'))
+                                ->acceptedFileTypes(['application/zip'])
+                                ->required()
+                                ->storeFiles(false)
+                        ])
+                        ->action(fn (array $data) => $this->importPlugin($data)),
+                    Action::make('enable')
+                        ->requiresConfirmation()
+                        ->label(trans('filament-plugins::messages.plugins.enable'))
+                        ->icon('heroicon-o-check-circle')
+                        ->action(function (array $data){
+                            collect(Module::all())->each(fn($module) => $module->enable());
+
+                            $this->redirect(static::getUrl());
+                        }),
+                    Action::make('disable')
+                        ->requiresConfirmation()
+                        ->label(trans('filament-plugins::messages.plugins.disable'))
+                        ->icon('heroicon-o-x-circle')
+                        ->action(fn (array $data) => collect(Module::all())->each(fn($module) => $module->disable())),
+                ])
             ];
         }
 
@@ -215,7 +233,7 @@ class Plugins extends Page implements HasTable
                 ->success()
                 ->send();
 
-            $this->js('window.location.reload()');
+            $this->redirect(static::getUrl());
 
         }
     }
@@ -245,5 +263,7 @@ class Plugins extends Page implements HasTable
             ->body(trans('filament-plugins::messages.plugins.notifications.created.body'))
             ->success()
             ->send();
+
+        $this->redirect(static::getUrl());
     }
 }

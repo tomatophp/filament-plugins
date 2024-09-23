@@ -6,6 +6,13 @@
             if ((bool) filament()->hasTenancy()) {
                $urlParams['tenant'] = filament()->getTenant();
             }
+            if($item->github){
+                $package = str($item->github)->remove('https://github.com/')->remove('https://www.github.com/')->toString();
+            }
+            else {
+                $package = null;
+            }
+
         @endphp
 
         <div class="bg-white border border-gray-100 dark:border-gray-700 overflow-hidden dark:bg-gray-800 rounded-lg flex flex-col shadow-sm" >
@@ -25,14 +32,28 @@
                 <div class="w-full">
                     <h1 class="font-bold">{{ json_decode($item['name'])->{app()->getLocale()} }}</h1>
                 </div>
-                <div>
-                    <h1>{{ $item['version'] }}</h1>
-                </div>
+                @if($package)
+                    <div>
+                        <img class="w-32" src="https://poser.pugx.org/{{ $package }}/version.svg" alt="Latest Stable Version">
+                    </div>
+                @endif
+
             </div>
             <div class="h-30 px-4">
                 <p class="text-gray-600 dark:text-gray-300 text-sm h-30 truncate ...">
                     {{ json_decode($item['description'])->{app()->getLocale()} }}
                 </p>
+                @if($item->github)
+                    <div class="flex justify-start gap-2 mt-3">
+                        <div>
+                            <img class="w-12" src="https://poser.pugx.org/{{ $package }}/d/total.svg" alt="Downloads">
+                        </div>
+                        <div>
+                            <img class="w-12" src="https://img.shields.io/github/stars/{{ $package }}?style=flat" alt="GitHub Repo stars">
+                        </div>
+                    </div>
+                @endif
+
             </div>
             <div class="flex justifiy-between gap-1 my-4 px-4 border-t border-gray-100 dark:border-gray-700 pt-4">
                 <div class="flex justifiy-start w-full gap-2">

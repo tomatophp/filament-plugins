@@ -2,6 +2,8 @@
 
 namespace TomatoPHP\FilamentPlugins;
 
+use Filament\Contracts\Plugin;
+use Filament\Panel;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
@@ -61,6 +63,28 @@ class FilamentPluginsServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         $this->registerModuleMacros();
+
+
+        Panel::macro('disablePlugin', function (Plugin $plugin): static
+        {
+            $this->resources = collect($this->resources)->filter(function ($item, $key) use ($plugin) {
+                $namespace = str(get_class($plugin))->explode('\\')[1];
+                return !str($item)->contains($namespace);
+            })->toArray();
+            $this->pages = collect($this->pages)->filter(function ($item, $key) use ($plugin) {
+                $namespace = str(get_class($plugin))->explode('\\')[1];
+                return !str($item)->contains($namespace);
+            })->toArray();
+            $this->widgets = collect($this->widgets)->filter(function ($item, $key) use ($plugin) {
+                $namespace = str(get_class($plugin))->explode('\\')[1];
+                return !str($item)->contains($namespace);
+            })->toArray();
+            $this->plugins = collect($this->plugins)->filter(function ($item, $key) use ($plugin) {
+                return $key !== $plugin->getId();
+            })->toArray();
+
+            return $this;
+        });
 
     }
 

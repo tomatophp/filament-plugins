@@ -107,6 +107,13 @@ class FilamentPluginsPlugin implements Plugin
                 ]);
         }
 
+        foreach ($panel->getPlugins() as $key=>$modulePlugin){
+            $module = Module::find(str(get_class($modulePlugin))->explode('\\')[1]);
+            if($module && !$module->isEnabled()){
+                $panel->disablePlugin($modulePlugin);
+            }
+        }
+
     }
 
     public function autoDiscoverModules(bool $autoDiscoverModules = true)
