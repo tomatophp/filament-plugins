@@ -79,6 +79,24 @@ php artisan filament-plugins:widget
 
 it will generate the files for you and you can use it directly, please note that you need to generate the model first than use other commands
 
+## Install Plugins using command line
+
+you can install a plugins using the command line by using this command
+
+```bash
+php artisan filament:plugins
+```
+
+you can select all to install all TomatoPHP ecosystem plugins or you can select the plugin you want to install
+
+## List of all TomatoPHP Plugins
+
+you can list all TomatoPHP plugins by using this command
+
+```bash
+php artisan filament-plugins:list
+```
+
 ## List your package on the plugins list
 
 you can list your package on the plugins list by adding this a json file in your package root folder with name `module.json` with content like this:
