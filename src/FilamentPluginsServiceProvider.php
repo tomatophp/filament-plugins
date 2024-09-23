@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Laravel\Module;
+use TomatoPHP\FilamentPlugins\Console\FilamentTomatoPluginsInstaller;
 
 
 class FilamentPluginsServiceProvider extends ServiceProvider
@@ -21,6 +22,8 @@ class FilamentPluginsServiceProvider extends ServiceProvider
            \TomatoPHP\FilamentPlugins\Console\FilamentPluginsGenerate::class,
            \TomatoPHP\FilamentPlugins\Console\FilamentPluginsModel::class,
            \TomatoPHP\FilamentPlugins\Console\FilamentPublishModule::class,
+            \TomatoPHP\FilamentPlugins\Console\FilamentTomatoPluginsInstaller::class,
+            \TomatoPHP\FilamentPlugins\Console\FilamentTomatoPluginsList::class
         ]);
 
         //Register Config file
