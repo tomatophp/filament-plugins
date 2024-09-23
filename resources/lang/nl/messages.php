@@ -52,7 +52,9 @@ return [
                 'title' => 'Success',
                 'body' => 'The plugin has been created successfully.'
             ],
-        ]
+        ],
+        'enable' => "Enable All",
+        'disable' => "Disable All",
     ],
     'tables' => [
         'title' => 'Tables',

@@ -23,7 +23,7 @@ return [
            'github' => 'Github',
            'docs' => 'Docs',
        ],
-        'notifications' => [
+       'notifications' => [
             'exists' => [
                 'title' => 'Error',
                 'body' => 'The plugin already exists.'
@@ -52,7 +52,9 @@ return [
                 'title' => 'Success',
                 'body' => 'The plugin has been created successfully.'
             ],
-        ]
+        ],
+        'enable' => "Enable All",
+        'disable' => "Disable All",
     ],
     'tables' => [
         'title' => 'Tables',
