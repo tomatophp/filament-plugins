@@ -187,7 +187,12 @@ class Plugins extends Page implements HasTable
                         ->form([
                             FileUpload::make('file')
                                 ->label(trans('filament-plugins::messages.plugins.form.file'))
-                                ->acceptedFileTypes(['application/zip'])
+                                ->acceptedFileTypes([
+                                    'application/zip',
+                                    'application/x-zip',
+                                    'application/octet-stream',
+                                    'application/x-zip-compressed',
+                                ])
                                 ->required()
                                 ->storeFiles(false)
                         ])
