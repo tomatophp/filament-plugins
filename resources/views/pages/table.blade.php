@@ -46,10 +46,10 @@
                 @if($item->github)
                     <div class="flex justify-start gap-2 mt-3">
                         <div>
-                            <img class="w-12" src="https://poser.pugx.org/{{ $package }}/d/total.svg" alt="Downloads">
+                            <img class="h-5" src="https://poser.pugx.org/{{ $package }}/d/total.svg" alt="Downloads">
                         </div>
                         <div>
-                            <img class="w-12" src="https://img.shields.io/github/stars/{{ $package }}?style=flat" alt="GitHub Repo stars">
+                            <img class="h-5" src="https://img.shields.io/github/stars/{{ $package }}?style=flat" alt="GitHub Repo stars">
                         </div>
                     </div>
                 @endif
