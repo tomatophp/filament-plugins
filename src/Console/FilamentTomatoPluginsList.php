@@ -5,10 +5,6 @@ namespace TomatoPHP\FilamentPlugins\Console;
 use Illuminate\Console\Command;
 use TomatoPHP\ConsoleHelpers\Traits\RunCommand;
 use TomatoPHP\FilamentPlugins\Console\Contracts\PluginsList;
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\multiselect;
-use function Laravel\Prompts\select;
-use function Laravel\Prompts\suggest;
 
 class FilamentTomatoPluginsList extends Command
 {
@@ -33,7 +29,6 @@ class FilamentTomatoPluginsList extends Command
         parent::__construct();
     }
 
-
     /**
      * Execute the console command.
      *
@@ -43,12 +38,12 @@ class FilamentTomatoPluginsList extends Command
     {
         $plugins = PluginsList::make();
 
-        foreach ($plugins as $plugin){
+        foreach ($plugins as $plugin) {
             $this->warn($plugin->label);
             $this->info($plugin->description);
             $this->info('Docs:'.$plugin->url);
             $this->warn('Install: composer required tomatophp/'.$plugin->key);
-            $this->info("====================================");
+            $this->info('====================================');
         }
     }
 }

@@ -3,17 +3,18 @@
 namespace TomatoPHP\FilamentPlugins\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use TomatoPHP\FilamentPlugins\Services\CRUDGenerator;
 
 /**
- * @property integer $id
+ * @property int $id
  * @property string $module
  * @property string $name
  * @property string $comment
- * @property boolean $timestamps
- * @property boolean $soft_deletes
- * @property boolean $migrated
- * @property boolean $generated
+ * @property bool $timestamps
+ * @property bool $soft_deletes
+ * @property bool $migrated
+ * @property bool $generated
  * @property string $created_at
  * @property string $updated_at
  * @property TableCol[] $tableCols
@@ -29,12 +30,11 @@ class Table extends Model
         'timestamps' => 'boolean',
         'soft_deletes' => 'boolean',
         'migrated' => 'boolean',
-        'generated' => 'boolean'
+        'generated' => 'boolean',
     ];
 
-
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function tableCols()
     {
@@ -49,6 +49,6 @@ class Table extends Model
 
     public function getTable()
     {
-        return config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_tables' : 'tables';
+        return config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix').'_tables' : 'tables';
     }
 }

@@ -8,8 +8,8 @@ use TomatoPHP\ConsoleHelpers\Traits\RunCommand;
 
 class FilamentPluginsInstall extends Command
 {
-    use RunCommand;
     use HandleFiles;
+    use RunCommand;
 
     /**
      * The name and signature of the console command.
@@ -30,7 +30,6 @@ class FilamentPluginsInstall extends Command
         parent::__construct();
     }
 
-
     /**
      * Execute the console command.
      *
@@ -39,9 +38,9 @@ class FilamentPluginsInstall extends Command
     public function handle()
     {
         $this->info('Publish Vendor Assets');
-        $this->artisanCommand(["migrate"]);
+        $this->artisanCommand(['migrate']);
         $this->copyFile(__DIR__.'/../../publish/modules.php', config_path('modules.php'));
-        $this->artisanCommand(["filament:optimize"]);
+        $this->artisanCommand(['filament:optimize']);
         $this->info('Filament Plugins installed successfully.');
     }
 }

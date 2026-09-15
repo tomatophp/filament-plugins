@@ -2,7 +2,8 @@
 
 namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
-use Illuminate\Support\Facades\Artisan;
+use App\Models\Account;
+use App\Models\User;
 use Illuminate\Support\Facades\File;
 use Nwidart\Modules\Facades\Module;
 
@@ -10,54 +11,53 @@ trait GenerateModel
 {
     public function generateModel()
     {
-        //Check if model exists or not
+        // Check if model exists or not
 
-        $namespace = "";
+        $namespace = '';
         $exists = false;
         $modelName = $this->modelName;
-        $filePath = "";
+        $filePath = '';
 
         $module = Module::find($this->moduleName);
         $appPath = 'app';
         $moduleDir = File::directories($module->getPath());
-        if(in_array($module->getPath() .'/src', $moduleDir)){
+        if (in_array($module->getPath().'/src', $moduleDir)) {
             $appPath = 'src';
         }
 
-        if($this->moduleName){
-            if(file_exists(module_path($this->moduleName) . '/'.$appPath . '/Models/'. $this->modelName . '.php')){
+        if ($this->moduleName) {
+            if (file_exists(module_path($this->moduleName).'/'.$appPath.'/Models/'.$this->modelName.'.php')) {
                 $exists = true;
             }
 
-            if($appPath === 'src'){
-                $info = json_decode(File::get(module_path($this->moduleName) . '/module.json'));
+            if ($appPath === 'src') {
+                $info = json_decode(File::get(module_path($this->moduleName).'/module.json'));
                 $namespaceStart = str($info->providers[0])->explode('\\')->first();
 
-                $namespace = $namespaceStart . "\\{$this->moduleName}\\Models";
-            }
-            else {
+                $namespace = $namespaceStart."\\{$this->moduleName}\\Models";
+            } else {
                 $namespace = "Modules\\{$this->moduleName}\\Models";
             }
 
-            $filePath = module_path($this->moduleName) . '/'.$appPath . '/Models/'. $this->modelName . '.php';
+            $filePath = module_path($this->moduleName).'/'.$appPath.'/Models/'.$this->modelName.'.php';
         }
 
-        if(!$exists){
+        if (! $exists) {
             $this->generateStubs(
-                $this->stubPath . "model.stub",
+                $this->stubPath.'model.stub',
                 $filePath,
                 [
-                    "name" => $this->modelName,
-                    "namespace" => $namespace,
-                    "table" => $this->tableName,
-                    "fillable" => $this->getFillable(),
-                    "docblock" => $this->getDocBlock(),
-                    "hidden" => $this->getHidden() ? 'protected $hidden = ['."\n" .$this->getHidden()  .''."\n".'    ];' : "",
-                    "casts" => $this->getCasts() ? 'protected $casts = ['."\n" .$this->getCasts() .''."\n".'    ];' : "",
-                    "methods" => $this->getMethods(),
+                    'name' => $this->modelName,
+                    'namespace' => $namespace,
+                    'table' => $this->tableName,
+                    'fillable' => $this->getFillable(),
+                    'docblock' => $this->getDocBlock(),
+                    'hidden' => $this->getHidden() ? 'protected $hidden = ['."\n".$this->getHidden().''."\n".'    ];' : '',
+                    'casts' => $this->getCasts() ? 'protected $casts = ['."\n".$this->getCasts().''."\n".'    ];' : '',
+                    'methods' => $this->getMethods(),
                 ],
                 [
-                    $this->moduleName ? module_path($this->moduleName) . '/'.$appPath . '/Models/' : app_path("Models")
+                    $this->moduleName ? module_path($this->moduleName).'/'.$appPath.'/Models/' : app_path('Models'),
                 ]
             );
 
@@ -67,43 +67,38 @@ trait GenerateModel
     private function getDocBlock()
     {
         $block = [];
-        foreach ($this->cols as $key=>$column) {
-            if($column['type'] === 'relation'){
-                if(str($column['relation']['model'])->contains('Account') && class_exists(\App\Models\Account::class)){
+        foreach ($this->cols as $key => $column) {
+            if ($column['type'] === 'relation') {
+                if (str($column['relation']['model'])->contains('Account') && class_exists(Account::class)) {
                     $block[] = '* @property \App\Models\Account $'.$column['name'];
-                }
-                else if(str($column['relation']['model'])->contains('User') && class_exists(\App\Models\User::class)){
+                } elseif (str($column['relation']['model'])->contains('User') && class_exists(User::class)) {
                     $block[] = '* @property \App\Models\User $'.$column['name'];
-                }
-                else {
+                } else {
                     $block[] = '* @property '.str($column['relation']['model'])->remove('::class').' $'.$column['name'];
                 }
-            }
-            else if($column['type'] === 'int'){
+            } elseif ($column['type'] === 'int') {
                 $block[] = '* @property int $'.$column['name'];
-            }
-            else {
+            } else {
                 $block[] = '* @property string $'.$column['name'];
             }
         }
+
         return implode("\n", $block);
     }
 
     private function getMethods()
     {
         $methods = [];
-        foreach ($this->cols as $key=>$column) {
-            if($column['type'] === 'relation'){
-                $method = 'public function '. str($column['name'])->remove('_id')->camel() .'()' ."\n";
-                $method .= '    {' ."\n";
-                if(str($column['relation']['model'])->contains('Account') && class_exists(\App\Models\Account::class)){
-                    $method .= '        return $this->belongsTo(\App\Models\Account::class);' ."\n";
-                }
-                else if(str($column['relation']['model'])->contains('User') && class_exists(\App\Models\User::class)){
-                    $method .= '        return $this->belongsTo(\App\Models\User::class);' ."\n";
-                }
-                else {
-                    $method .= '        return $this->belongsTo('.$column['relation']['model'].'::class);' ."\n";
+        foreach ($this->cols as $key => $column) {
+            if ($column['type'] === 'relation') {
+                $method = 'public function '.str($column['name'])->remove('_id')->camel().'()'."\n";
+                $method .= '    {'."\n";
+                if (str($column['relation']['model'])->contains('Account') && class_exists(Account::class)) {
+                    $method .= '        return $this->belongsTo(\App\Models\Account::class);'."\n";
+                } elseif (str($column['relation']['model'])->contains('User') && class_exists(User::class)) {
+                    $method .= '        return $this->belongsTo(\App\Models\User::class);'."\n";
+                } else {
+                    $method .= '        return $this->belongsTo('.$column['relation']['model'].'::class);'."\n";
                 }
                 $method .= '    }';
 
@@ -111,10 +106,9 @@ trait GenerateModel
             }
         }
 
-        if(count($methods)){
+        if (count($methods)) {
             return implode("\n", $methods);
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -122,16 +116,15 @@ trait GenerateModel
     private function getHidden()
     {
         $hidden = [];
-        foreach ($this->cols as $key=>$column) {
-            if(str($column['name'])->contains(['password', 'token'])){
+        foreach ($this->cols as $key => $column) {
+            if (str($column['name'])->contains(['password', 'token'])) {
                 $hidden[] = '        \''.$column['name']."'";
             }
         }
 
-        if(count($hidden)){
+        if (count($hidden)) {
             return implode(",\n", $hidden);
-        }
-        else {
+        } else {
             return false;
         }
 
@@ -140,25 +133,25 @@ trait GenerateModel
     private function getFillable()
     {
         $fillable = [];
-        foreach ($this->cols as $key=>$column) {
-            $fillable[] = ($key!==0?'        ':"") .'\''.$column['name']."'";
+        foreach ($this->cols as $key => $column) {
+            $fillable[] = ($key !== 0 ? '        ' : '').'\''.$column['name']."'";
         }
+
         return implode(",\n", $fillable);
     }
 
     private function getCasts()
     {
         $casts = [];
-        foreach ($this->cols as $key=>$column) {
+        foreach ($this->cols as $key => $column) {
             if ($column['type'] == 'boolean') {
                 $casts[] = '        \''.$column['name'].'\' => \'boolean\'';
-            }
-            elseif ($column['type'] == 'json') {
+            } elseif ($column['type'] == 'json') {
                 $casts[] = '        \''.$column['name'].'\' => \'json\'';
             }
         }
 
-        if(count($casts)){
+        if (count($casts)) {
             return implode(",\n", $casts);
         }
 

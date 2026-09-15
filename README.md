@@ -8,6 +8,13 @@
 
 Manage your modules as a plugin system with plugin generator
 
+## Compatibility
+
+| Package | Filament | Laravel | PHP |
+| --- | --- | --- | --- |
+| 5.x | 5.x | 12.x / 13.x | 8.2+ |
+| 1.x (branch `v3`) | 3.x | 10.x / 11.x | 8.1+ |
+
 ## Screenshots
 
 ![Plugins](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/plugins.png)
@@ -19,7 +26,7 @@ Manage your modules as a plugin system with plugin generator
 ## Installation
 
 ```bash
-composer require tomatophp/filament-plugins
+composer require tomatophp/filament-plugins:^5.0
 ```
 after install your package please run this command
 
@@ -174,6 +181,23 @@ you can stop auto-load module resources by using this code in your PanelProvider
 ```php
 ->plugin(\TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()->autoDiscoverModules(false))
 ```
+
+## Lock Down File-Writing Features
+
+Everything is allowed by default (same as the `filament-plugins.php` config file). On a shared or public panel you can turn off every feature that writes files, extracts ZIP files, runs `migrate`, or enables, disables or deletes modules:
+
+```php
+->plugin(
+    \TomatoPHP\FilamentPlugins\FilamentPluginsPlugin::make()
+        ->allowCreate(false)    // "Create Plugin" action (runs module:make and writes files)
+        ->allowImport(false)    // "Import Plugin" action (extracts a ZIP into the modules folder)
+        ->allowToggle(false)    // enable / disable actions for one or all modules
+        ->allowDestroy(false)   // delete module action (removes the module folder)
+        ->allowGenerator(false) // tables builder, migrations and resource / page / widget / model generator
+)
+```
+
+Each option falls back to the matching config key (`allow_create`, `allow_upload`, `allow_toggle`, `allow_destroy`, `allow_generator`) when you don't call it.
 
 ## Stop Using Plugins UI
 

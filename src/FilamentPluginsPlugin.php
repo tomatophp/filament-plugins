@@ -3,21 +3,41 @@
 namespace TomatoPHP\FilamentPlugins;
 
 use Filament\Contracts\Plugin;
+use Filament\Facades\Filament;
 use Filament\Panel;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 use Nwidart\Modules\Facades\Module;
+use Throwable;
+use TomatoPHP\FilamentPlugins\Models\Plugin as PluginModel;
 use TomatoPHP\FilamentPlugins\Pages\Plugins;
 use TomatoPHP\FilamentPlugins\Resources\TableResource;
 
 class FilamentPluginsPlugin implements Plugin
 {
+    /**
+     * Feature name => config key used when the option is not set on the plugin.
+     */
+    public const FEATURES = [
+        'create' => 'allow_create',
+        'import' => 'allow_upload',
+        'toggle' => 'allow_toggle',
+        'destroy' => 'allow_destroy',
+        'generator' => 'allow_generator',
+    ];
 
     private array $modules = [];
+
     private bool $useUI = true;
+
     private bool $autoDiscoverModules = true;
+
     private bool $discoverCurrentPanelOnly = false;
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $allowed = [];
 
     public function getId(): string
     {
@@ -26,28 +46,32 @@ class FilamentPluginsPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $plugins = \TomatoPHP\FilamentPlugins\Models\Plugin::all();
+        $plugins = PluginModel::all();
         $useClusters = config('filament-plugins.clusters.enabled', false);
-        if(!count($this->modules) && $this->autoDiscoverModules){
-            $this->modules = Module::all();
+        $modules = $this->modules;
+        if (! count($modules) && $this->autoDiscoverModules) {
+            $modules = array_keys(Module::all());
         }
-        foreach ($plugins as $plugin){
-            if($plugin->type === 'plugin' && in_array($plugin->module_name, $this->modules)){
+        foreach ($plugins as $plugin) {
+            if ($plugin->type === 'plugin' && in_array($plugin->module_name, $modules)) {
                 $module = Module::find($plugin->module_name);
+                if (! $module) {
+                    continue;
+                }
                 $dir = File::directories($module->getPath());
-                if($module->isEnabled() && !in_array($module->getPath() . DIRECTORY_SEPARATOR . 'src', $dir)){
-                    $checkIfThereIsDirectoryForThisPanel = File::exists($module->appPath('Filament' . DIRECTORY_SEPARATOR . Str::studly($panel->getId())));
-                    if($checkIfThereIsDirectoryForThisPanel && $this->discoverCurrentPanelOnly){
+                if ($module->isEnabled() && ! in_array($module->getPath().DIRECTORY_SEPARATOR.'src', $dir)) {
+                    $checkIfThereIsDirectoryForThisPanel = File::exists($module->appPath('Filament'.DIRECTORY_SEPARATOR.Str::studly($panel->getId())));
+                    if ($checkIfThereIsDirectoryForThisPanel && $this->discoverCurrentPanelOnly) {
                         $panel->discoverPages(
-                            in: $module->appPath('Filament' . DIRECTORY_SEPARATOR .  Str::studly($panel->getId()) . DIRECTORY_SEPARATOR . 'Pages'),
+                            in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.Str::studly($panel->getId()).DIRECTORY_SEPARATOR.'Pages'),
                             for: $module->appNamespace('\\Filament\\'.Str::studly($panel->getId()).'\\Pages')
                         );
                         $panel->discoverResources(
-                            in: $module->appPath('Filament' . DIRECTORY_SEPARATOR .  Str::studly($panel->getId()) . DIRECTORY_SEPARATOR . 'Resources'),
+                            in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.Str::studly($panel->getId()).DIRECTORY_SEPARATOR.'Resources'),
                             for: $module->appNamespace('\\Filament\\'.Str::studly($panel->getId()).'\\Resources')
                         );
                         $panel->discoverWidgets(
-                            in: $module->appPath('Filament' . DIRECTORY_SEPARATOR .  Str::studly($panel->getId()) . DIRECTORY_SEPARATOR . 'Widgets'),
+                            in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.Str::studly($panel->getId()).DIRECTORY_SEPARATOR.'Widgets'),
                             for: $module->appNamespace('\\Filament\\'.Str::studly($panel->getId()).'\\Widgets')
                         );
 
@@ -57,25 +81,22 @@ class FilamentPluginsPlugin implements Plugin
                         );
 
                         if ($useClusters) {
-                            $path = $module->appPath('Filament' . DIRECTORY_SEPARATOR .  Str::studly($panel->getId()) . DIRECTORY_SEPARATOR . 'Clusters');
-                            $namespace = $module->appNamespace('\\Filament\\'.Str::studly($panel->getId()).'\\Clusters');
                             $panel->discoverClusters(
-                                in: $path,
-                                for: $namespace,
+                                in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.Str::studly($panel->getId()).DIRECTORY_SEPARATOR.'Clusters'),
+                                for: $module->appNamespace('\\Filament\\'.Str::studly($panel->getId()).'\\Clusters'),
                             );
                         }
-                    }
-                    else {
+                    } else {
                         $panel->discoverPages(
-                            in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages'),
+                            in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.'Pages'),
                             for: $module->appNamespace('\\Filament\\Pages')
                         );
                         $panel->discoverResources(
-                            in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Resources'),
+                            in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.'Resources'),
                             for: $module->appNamespace('\\Filament\\Resources')
                         );
                         $panel->discoverWidgets(
-                            in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Widgets'),
+                            in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.'Widgets'),
                             for: $module->appNamespace('\\Filament\\Widgets')
                         );
 
@@ -85,11 +106,9 @@ class FilamentPluginsPlugin implements Plugin
                         );
 
                         if ($useClusters) {
-                            $path = $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Clusters');
-                            $namespace = $module->appNamespace('\\Filament\\Clusters');
                             $panel->discoverClusters(
-                                in: $path,
-                                for: $namespace,
+                                in: $module->appPath('Filament'.DIRECTORY_SEPARATOR.'Clusters'),
+                                for: $module->appNamespace('\\Filament\\Clusters'),
                             );
                         }
                     }
@@ -97,34 +116,37 @@ class FilamentPluginsPlugin implements Plugin
             }
         }
 
-        if($this->useUI){
-            $panel
-                ->resources([
-                    TableResource::class
-                ])
-                ->pages([
-                    Plugins::class
-                ]);
-        }
+        if ($this->useUI) {
+            $panel->pages([
+                Plugins::class,
+            ]);
 
-        foreach ($panel->getPlugins() as $key=>$modulePlugin){
-            $module = Module::find(str(get_class($modulePlugin))->explode('\\')[1]);
-            if($module && !$module->isEnabled()){
-                $panel->disablePlugin($modulePlugin);
+            if ($this->isAllowed('generator')) {
+                $panel->resources([
+                    TableResource::class,
+                ]);
             }
         }
 
+        foreach ($panel->getPlugins() as $modulePlugin) {
+            $module = Module::find(str(get_class($modulePlugin))->explode('\\')[1] ?? '');
+            if ($module && ! $module->isEnabled()) {
+                $panel->disablePlugin($modulePlugin);
+            }
+        }
     }
 
-    public function autoDiscoverModules(bool $autoDiscoverModules = true)
+    public function autoDiscoverModules(bool $autoDiscoverModules = true): static
     {
         $this->autoDiscoverModules = $autoDiscoverModules;
+
         return $this;
     }
 
-    public function modules(array $modules)
+    public function modules(array $modules): static
     {
         $this->modules = $modules;
+
         return $this;
     }
 
@@ -135,18 +157,102 @@ class FilamentPluginsPlugin implements Plugin
 
     public static function make(): static
     {
-        return new static();
+        return app(static::class);
+    }
+
+    /**
+     * The plugin registered on the current panel, if any.
+     */
+    public static function get(): ?static
+    {
+        try {
+            $panel = Filament::getCurrentOrDefaultPanel();
+
+            if ($panel?->hasPlugin('filament-plugins')) {
+                /** @var static */
+                return $panel->getPlugin('filament-plugins');
+            }
+        } catch (Throwable) {
+            //
+        }
+
+        return null;
+    }
+
+    /**
+     * Is a file-writing feature (create, import, toggle, destroy, generator) allowed on the current panel?
+     */
+    public static function allows(string $feature): bool
+    {
+        return static::get()?->isAllowed($feature) ?? (bool) config('filament-plugins.'.static::FEATURES[$feature], true);
+    }
+
+    public function isAllowed(string $feature): bool
+    {
+        return $this->allowed[$feature] ?? (bool) config('filament-plugins.'.static::FEATURES[$feature], true);
+    }
+
+    /**
+     * "Create Plugin" action: runs `module:make` and writes the plugin files.
+     */
+    public function allowCreate(bool $condition = true): static
+    {
+        $this->allowed['create'] = $condition;
+
+        return $this;
+    }
+
+    /**
+     * "Import Plugin" action: extracts an uploaded ZIP file into the modules folder.
+     */
+    public function allowImport(bool $condition = true): static
+    {
+        $this->allowed['import'] = $condition;
+
+        return $this;
+    }
+
+    /**
+     * Enable / disable actions for one module or all modules.
+     */
+    public function allowToggle(bool $condition = true): static
+    {
+        $this->allowed['toggle'] = $condition;
+
+        return $this;
+    }
+
+    /**
+     * Delete action: removes the module folder.
+     */
+    public function allowDestroy(bool $condition = true): static
+    {
+        $this->allowed['destroy'] = $condition;
+
+        return $this;
+    }
+
+    /**
+     * Tables builder, migrations and the model / resource / page / widget generator.
+     */
+    public function allowGenerator(bool $condition = true): static
+    {
+        $this->allowed['generator'] = $condition;
+
+        return $this;
     }
 
     public function useUI(bool $useUI): static
     {
         $this->useUI = $useUI;
+
         return $this;
     }
 
-    public function discoverCurrentPanelOnly(bool $discoverCurrentPanelOnly=true): static
+    public function discoverCurrentPanelOnly(bool $discoverCurrentPanelOnly = true): static
     {
         $this->discoverCurrentPanelOnly = $discoverCurrentPanelOnly;
+
         return $this;
     }
 }

@@ -3,25 +3,32 @@
 namespace TomatoPHP\FilamentPlugins\Services\Traits;
 
 use Nwidart\Modules\Facades\Module;
+use TomatoPHP\FilamentPlugins\Services\ModulePaths;
 
 trait GeneratePage
 {
     public function generatePage(): void
     {
         $module = Module::find($this->name);
+
+        if (! $module) {
+            return;
+        }
+
         $this->generateStubs(
-            $this->stubPath . 'page.stub',
-            base_path("Modules") . '/'. $this->name . '/app/Filament/Pages/'. $this->name . 'Page.php',
+            $this->stubPath.'page.stub',
+            ModulePaths::appPath($module, 'Filament/Pages/'.$this->name.'Page.php'),
             [
-                "namespace" => "Modules\\" . $this->name . "\\Filament\\Pages",
-                "view" => $module->getLowerName()."::index",
-                "title" => $this->title,
-                "icon" => $this->icon,
-                "name" => $this->name . 'Page',
+                'namespace' => ModulePaths::appNamespace($module, 'Filament\\Pages'),
+                'view' => $module->getLowerName().'::index',
+                'title' => $this->title,
+                'icon' => $this->icon,
+                'name' => $this->name.'Page',
             ],
             [
-                base_path("Modules") . "/". $this->name . "/app/Filament",
-                base_path("Modules") . "/". $this->name . "/app/Filament/Pages",
+                ModulePaths::appPath($module),
+                ModulePaths::appPath($module, 'Filament'),
+                ModulePaths::appPath($module, 'Filament/Pages'),
             ]
         );
     }

@@ -2,36 +2,34 @@
 
 namespace TomatoPHP\FilamentPlugins\Resources\TableResource\Pages;
 
-use Filament\Tables\Table;
-use TomatoPHP\FilamentPlugins\Resources\TableResource;
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
+use TomatoPHP\FilamentPlugins\Pages\Plugins;
+use TomatoPHP\FilamentPlugins\Resources\TableResource;
 
 class ListTables extends ListRecords
 {
     protected static string $resource = TableResource::class;
 
-
     public function mount(): void
     {
-        if(!request()->has('module')){
-            $this->redirect(route('filament.'.filament()->getCurrentPanel()->getId().'.pages.plugins'));
+        if (! request()->has('module')) {
+            $this->redirect(Plugins::getUrl());
+
+            return;
         }
 
-        if(session()->has('current_module')){
-            session()->forget('current_module');
-        }
+        session()->put('current_module', request()->query('module'));
 
-        session()->put('current_module', request()->get('module'));
+        parent::mount();
     }
-
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('create')
+            Action::make('create')
                 ->label(trans('filament-plugins::messages.tables.actions.create'))
-                ->url(route('filament.'.filament()->getCurrentPanel()->getId().'.resources.tables.create', ['module' => request()->get('module')]))
+                ->url(fn (): string => TableResource::getUrl('create', ['module' => session()->get('current_module')])),
         ];
     }
 }

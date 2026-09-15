@@ -4,17 +4,23 @@ namespace TomatoPHP\FilamentPlugins\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Nwidart\Modules\Facades\Module as Modules;
 use Nwidart\Modules\Module;
+use Symfony\Component\Process\Process;
 use TomatoPHP\ConsoleHelpers\Traits\RunCommand;
-use TomatoPHP\FilamentPlugins\Services\PublishPackage;
+use TomatoPHP\FilamentPlugins\Services\ModulePaths;
+
 use function Laravel\Prompts\search;
 
 class FilamentPublishModule extends Command
 {
     use RunCommand;
 
-    private ?Module $module = null;
-    private ?string $newPath = null;
+    protected ?Module $module = null;
+
+    protected ?string $newPath = null;
+
+    protected ?string $oldPath = null;
 
     /**
      * The name and signature of the console command.
@@ -30,33 +36,28 @@ class FilamentPublishModule extends Command
      */
     protected $description = 'publish a module';
 
-    public function __construct()
+    public function handle(): int
     {
-        parent::__construct();
-    }
+        $modules = collect(Modules::all())->filter(fn ($item) => str($item->getPath())->contains('vendor'));
 
-
-    public function handle()
-    {
-        $modules = collect(\Nwidart\Modules\Facades\Module::all())->filter(function ($item){
-            if(str($item->getPath())->contains('vendor')){
-                return true;
-            }
-
-            return false;
-        });
-        $module = $this->argument('module') && $this->argument('module') != "0" ? $this->argument('module') : search(
+        $module = $this->argument('module') && $this->argument('module') != '0' ? $this->argument('module') : search(
             label: 'Please input your module name you went to publish?',
             options: fn (string $value) => strlen($value) > 0
-                ? $modules->filter(function ($item, $key) use ($value){
-                    return str($item->getName())->contains($value) ? (string)$item->getName() : null;
-                })->toArray()
+                ? $modules->filter(fn ($item) => str($item->getName())->contains($value))
+                    ->map(fn ($item) => (string) $item->getName())
+                    ->toArray()
                 : [],
-            placeholder: "ex: FilamentAccounts",
+            placeholder: 'ex: FilamentAccounts',
             scroll: 10
         );
 
-        $this->module = \Nwidart\Modules\Facades\Module::find($module);
+        $this->module = Modules::find($module);
+
+        if (! $this->module) {
+            $this->error("Module [{$module}] not found.");
+
+            return static::FAILURE;
+        }
 
         $this->info("Publishing module: {$module}");
 
@@ -64,48 +65,53 @@ class FilamentPublishModule extends Command
         $this->registerProvider();
         $this->updateComposer();
 
-
         $this->info("Module: {$module} published successfully");
+
+        return static::SUCCESS;
     }
 
-
-    public function moveFolder()
+    public function moveFolder(): void
     {
-        $basePath = $this->module->getPath();
-        $newFolderName = $this->module->getStudlyName();
+        $this->oldPath = $this->module->getPath();
+        $this->newPath = ModulePaths::modulesPath($this->module->getStudlyName());
 
-        File::move($basePath, base_path("Modules/{$newFolderName}"));
-
-        $this->newPath = base_path("Modules/{$newFolderName}");
+        File::ensureDirectoryExists(dirname($this->newPath));
+        File::moveDirectory($this->oldPath, $this->newPath);
     }
 
-    public function updateComposer()
+    /**
+     * Remove the package from the host composer.json and run `composer update`.
+     */
+    public function updateComposer(): void
     {
         $composerJson = json_decode(File::get(base_path('composer.json')), true);
-        $packageName = str($this->module->getPath())->remove(base_path('/vendor/'));
-        $composerCollect = collect($composerJson['require'])->filter(function ($item, $key) use ($packageName){
-            return !str($key)->contains($packageName);
-        });
-        $composerJson['require'] = $composerCollect->toArray();
+        $packageName = (string) str(str_replace('\\', '/', (string) $this->oldPath))->after('/vendor/');
+        $composerJson['require'] = collect($composerJson['require'] ?? [])
+            ->reject(fn ($version, $key) => $packageName !== '' && str($key)->contains($packageName))
+            ->toArray();
 
-        File::put(base_path('composer.json'), json_encode($composerJson, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES ));
+        File::put(base_path('composer.json'), json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
-        system('composer update');
+        (new Process(['composer', 'update'], base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
+            ->setTimeout(null)
+            ->run(fn ($type, $output) => $this->output->write($output));
     }
 
-    public function registerProvider()
+    /**
+     * Add the module providers to the host bootstrap/providers.php.
+     */
+    public function registerProvider(): void
     {
-        $info = json_decode(File::get($this->newPath . "/module.json"));
+        $info = json_decode(File::get($this->newPath.'/module.json'));
         $providers = include base_path('bootstrap/providers.php');
-        foreach ($info->providers as $provider){
+        foreach ($info->providers ?? [] as $provider) {
             $providers[] = $provider;
         }
 
-        $array = "";
-        foreach ($providers as $provider){
+        $array = '';
+        foreach (array_unique($providers) as $provider) {
             $array .= "\t".$provider."::class,\n";
         }
         File::put(base_path('bootstrap/providers.php'), "<?php\nreturn [\n ".$array." \n];\n");
     }
-
 }

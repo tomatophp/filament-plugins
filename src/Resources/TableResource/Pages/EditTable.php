@@ -2,9 +2,9 @@
 
 namespace TomatoPHP\FilamentPlugins\Resources\TableResource\Pages;
 
-use TomatoPHP\FilamentPlugins\Resources\TableResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use TomatoPHP\FilamentPlugins\Resources\TableResource;
 
 class EditTable extends EditRecord
 {
@@ -18,7 +18,7 @@ class EditTable extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

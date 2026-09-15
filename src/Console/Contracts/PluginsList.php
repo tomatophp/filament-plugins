@@ -3,7 +3,6 @@
 namespace TomatoPHP\FilamentPlugins\Console\Contracts;
 
 use Illuminate\Support\Collection;
-use TomatoPHP\FilamentPlugins\Console\Contracts\Plugin;
 
 class PluginsList
 {

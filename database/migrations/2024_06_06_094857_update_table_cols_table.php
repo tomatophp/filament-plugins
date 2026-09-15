@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_table_cols' : 'table_cols', function (Blueprint $table) {
+        Schema::table(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix').'_table_cols' : 'table_cols', function (Blueprint $table) {
             $table->integer('order')->default(0)->nullable();
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_table_cols' : 'table_cols', function (Blueprint $table) {
+        Schema::table(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix').'_table_cols' : 'table_cols', function (Blueprint $table) {
             $table->dropColumn('order');
         });
     }

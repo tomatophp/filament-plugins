@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\Artisan;
 
 trait GenerateModule
 {
-    public function generateModule()
+    public function generateModule(): void
     {
-        Artisan::call('module:make ' . $this->name);
-        sleep(3);
+        Artisan::call('module:make', ['name' => [$this->name]]);
     }
 }

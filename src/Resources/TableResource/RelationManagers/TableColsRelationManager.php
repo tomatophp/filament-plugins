@@ -4,15 +4,23 @@ namespace TomatoPHP\FilamentPlugins\Resources\TableResource\RelationManagers;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TableColsRelationManager extends RelationManager
 {
@@ -23,15 +31,15 @@ class TableColsRelationManager extends RelationManager
         return trans('filament-plugins::messages.tables.columns');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
                     ->label(trans('filament-plugins::messages.tables.form.name'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('type')
+                Select::make('type')
                     ->label(trans('filament-plugins::messages.tables.form.type'))
                     ->searchable()
                     ->required()
@@ -54,28 +62,28 @@ class TableColsRelationManager extends RelationManager
                         'datetime' => 'datetime',
                         'timestamps' => 'timestamps',
                     ]),
-                Forms\Components\TextInput::make('length')
+                TextInput::make('length')
                     ->label(trans('filament-plugins::messages.tables.form.lenth'))
                     ->default(255)
                     ->maxLength(255),
-                Forms\Components\TextInput::make('default')
+                TextInput::make('default')
                     ->maxLength(255),
-                Forms\Components\Toggle::make('nullable')
+                Toggle::make('nullable')
                     ->label(trans('filament-plugins::messages.tables.form.nullable'))
                     ->default(true),
-                Forms\Components\Toggle::make('unsigned')
+                Toggle::make('unsigned')
                     ->label(trans('filament-plugins::messages.tables.form.unsigned')),
-                Forms\Components\Toggle::make('auto_increment')
+                Toggle::make('auto_increment')
                     ->label(trans('filament-plugins::messages.tables.form.auto_increment')),
-                Forms\Components\Toggle::make('primary')
+                Toggle::make('primary')
                     ->label(trans('filament-plugins::messages.tables.form.primary')),
-                Forms\Components\Toggle::make('unique')
+                Toggle::make('unique')
                     ->label(trans('filament-plugins::messages.tables.form.unique')),
-                Forms\Components\Toggle::make('index')
+                Toggle::make('index')
                     ->label(trans('filament-plugins::messages.tables.form.index')),
-                Forms\Components\Toggle::make('foreign')
+                Toggle::make('foreign')
                     ->label(trans('filament-plugins::messages.tables.form.foreign'))
-                    ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get) {
+                    ->afterStateUpdated(function (Set $set, Get $get) {
                         if ($get('foreign') === true) {
                             $set('type', 'bigint');
                             $set('unsigned', true);
@@ -85,20 +93,20 @@ class TableColsRelationManager extends RelationManager
                         }
                     })
                     ->live(),
-                Forms\Components\TextInput::make('foreign_table')
+                TextInput::make('foreign_table')
                     ->label(trans('filament-plugins::messages.tables.form.foreign_table'))
                     ->required()
                     ->columnSpan(2)
-                    ->hidden(fn (Forms\Get $get) => !$get('foreign')),
-                Forms\Components\TextInput::make('foreign_col')
+                    ->hidden(fn (Get $get) => ! $get('foreign')),
+                TextInput::make('foreign_col')
                     ->label(trans('filament-plugins::messages.tables.form.foreign_col'))
                     ->required()
                     ->columnSpan(2)
-                    ->hidden(fn (Forms\Get $get) => !$get('foreign')),
-                Forms\Components\Toggle::make('foreign_on_delete_cascade')
+                    ->hidden(fn (Get $get) => ! $get('foreign')),
+                Toggle::make('foreign_on_delete_cascade')
                     ->label(trans('filament-plugins::messages.tables.form.foreign_on_delete_cascade'))
                     ->required()
-                    ->hidden(fn (Forms\Get $get) => !$get('foreign')),
+                    ->hidden(fn (Get $get) => ! $get('foreign')),
             ]);
     }
 
@@ -108,15 +116,16 @@ class TableColsRelationManager extends RelationManager
             ->reorderable('order')
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(trans('filament-plugins::messages.tables.form.name')),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->label(trans('filament-plugins::messages.tables.form.type')),
-                Tables\Columns\BooleanColumn::make('nullable')
-                    ->label(trans('filament-plugins::messages.tables.form.nullable')),
+                IconColumn::make('nullable')
+                    ->label(trans('filament-plugins::messages.tables.form.nullable'))
+                    ->boolean(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('type')
+                SelectFilter::make('type')
                     ->label(trans('filament-plugins::messages.tables.form.type'))
                     ->searchable()
                     ->options([
@@ -139,10 +148,10 @@ class TableColsRelationManager extends RelationManager
                     ]),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->label(trans('filament-plugins::messages.tables.actions.columns')),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('id')
+                ActionGroup::make([
+                    Action::make('id')
                         ->color('info')
                         ->requiresConfirmation()
                         ->label(trans('filament-plugins::messages.tables.actions.add-id'))
@@ -158,16 +167,15 @@ class TableColsRelationManager extends RelationManager
                         }),
                 ]),
 
-
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->defaultSort('order')
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_tables' : 'tables', function (Blueprint $table) {
+        Schema::create(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix').'_tables' : 'tables', function (Blueprint $table) {
             $table->id();
 
-            //Link To Module
+            // Link To Module
             $table->string('module');
             $table->string('name')->index()->unique();
             $table->string('comment')->nullable();
 
-            //Options
+            // Options
             $table->boolean('timestamps')->default(true)->nullable();
             $table->boolean('soft_deletes')->default(false)->nullable();
             $table->boolean('migrated')->default(false)->nullable();
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix') . '_tables' : 'tables');
+        Schema::dropIfExists(config('filament-plugins.database_prefix') ? config('filament-plugins.database_prefix').'_tables' : 'tables');
     }
 };

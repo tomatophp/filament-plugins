@@ -2,27 +2,23 @@
 
 namespace TomatoPHP\FilamentPlugins\Services\Traits;
 
-use Illuminate\Support\Str;
+use TomatoPHP\FilamentPlugins\Services\ModulePaths;
 
 trait GenerateReadMe
 {
-    /**
-     * @return void
-     */
     private function generateReadMe(): void
     {
-        //Generate Readme.md file
         $this->generateStubs(
-            $this->stubPath . 'readme.stub',
-            base_path("Modules") . '/'. $this->name . '/README.md',
+            $this->stubPath.'readme.stub',
+            ModulePaths::modulesPath($this->name.'/README.md'),
             [
-                "name" => $this->name,
-                "title" => $this->title,
-                "description" => $this->description,
+                'name' => $this->name,
+                'title' => $this->title,
+                'description' => $this->description,
             ],
             [
-                base_path("Modules"),
-                base_path("Modules") . "/". $this->name,
+                ModulePaths::modulesPath(),
+                ModulePaths::modulesPath($this->name),
             ]
         );
     }

@@ -4,11 +4,13 @@ namespace TomatoPHP\FilamentPlugins\Console;
 
 use Illuminate\Console\Command;
 use TomatoPHP\ConsoleHelpers\Traits\RunCommand;
+use TomatoPHP\FilamentPlugins\Console\Contracts\Plugin;
 use TomatoPHP\FilamentPlugins\Console\Contracts\PluginsList;
+
 use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\info;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
-use function Laravel\Prompts\suggest;
 
 class FilamentTomatoPluginsInstaller extends Command
 {
@@ -28,25 +30,14 @@ class FilamentTomatoPluginsInstaller extends Command
      */
     protected $description = 'install selected TomatoPHP echo system plugins';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): int
     {
         $all = confirm(
             label: 'Do you want to install all plugins?',
             default: false,
         );
 
-        if(!$all){
+        if (! $all) {
             $group = select(
                 label: 'Select the group of plugins you want to install',
                 options: PluginsList::make()->groupBy('group')->keys()->toArray(),
@@ -55,26 +46,33 @@ class FilamentTomatoPluginsInstaller extends Command
 
             $packages = multiselect(
                 label: 'Select the package you want to install',
-                required: true,
                 options: PluginsList::make()->where('group', $group)->sortBy('group')->pluck('label', 'key')->toArray(),
+                required: true,
             );
 
             foreach ($packages as $package) {
-                $package = PluginsList::make()->where('key', $package)->first();
-                $package->install();
+                $this->installPlugin(PluginsList::make()->where('key', $package)->first());
             }
-        }
-        else {
-            $packages = PluginsList::make();
-            foreach ($packages as $package){
-                $package->install();
+        } else {
+            foreach (PluginsList::make() as $package) {
+                $this->installPlugin($package);
             }
         }
 
-        \Laravel\Prompts\info('🍅 Thanks for using Tomato Plugins & TomatoPHP framework');
-        \Laravel\Prompts\info('💼 Join support server on discord https://discord.gg/VZc8nBJ3ZU');
-        \Laravel\Prompts\info('📄 You can check docs here https://docs.tomatophp.com');
-        \Laravel\Prompts\info('⭐ please gave us a start on any repo if you like it https://github.com/tomatophp');
-        \Laravel\Prompts\info('🤝 sponser us here https://github.com/sponsors/3x1io');
+        info('Thanks for using Tomato Plugins & TomatoPHP framework');
+        info('Join support server on discord https://discord.gg/VZc8nBJ3ZU');
+        info('You can check docs here https://docs.tomatophp.com');
+        info('Please give us a star on any repo if you like it https://github.com/tomatophp');
+        info('Sponsor us here https://github.com/sponsors/3x1io');
+
+        return static::SUCCESS;
+    }
+
+    /**
+     * Runs `composer require` and the plugin install command.
+     */
+    protected function installPlugin(Plugin $plugin): void
+    {
+        $plugin->install();
     }
 }

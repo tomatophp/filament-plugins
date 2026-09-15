@@ -2,22 +2,25 @@
 
 namespace {{ namespace }};
 
+use BackedEnum;
 use Filament\Pages\Page;
+use UnitEnum;
 
 class {{ name }} extends Page
 {
-    public static string $view = '{{ view }}';
-    public static ?string $navigationLabel = '{{ title }}';
-    public static ?string $navigationIcon = '{{ icon }}';
+    protected string $view = '{{ view }}';
+
+    protected static ?string $navigationLabel = '{{ title }}';
+
+    protected static string | BackedEnum | null $navigationIcon = '{{ icon }}';
 
     public function getTitle(): string
     {
         return __('{{ title }}');
     }
 
-    public static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): string | UnitEnum | null
     {
         return __('{{ title }}');
     }
-
 }

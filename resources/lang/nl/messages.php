@@ -26,35 +26,35 @@ return [
         'notifications' => [
             'exists' => [
                 'title' => 'Error',
-                'body' => 'The plugin already exists.'
+                'body' => 'The plugin already exists.',
             ],
             'autoload' => [
                 'title' => 'Error',
-                'body' => 'The plugin could not be activated because the class could not be found. please run composer dump-autoload on your terminal'
+                'body' => 'The plugin could not be activated because the class could not be found. please run composer dump-autoload on your terminal',
             ],
             'enabled' => [
                 'title' => 'Success',
-                'body' => 'The plugin has been activated successfully.'
+                'body' => 'The plugin has been activated successfully.',
             ],
             'deleted' => [
                 'title' => 'Success',
-                'body' => 'The plugin has been deleted successfully.'
+                'body' => 'The plugin has been deleted successfully.',
             ],
             'disabled' => [
                 'title' => 'Success',
-                'body' => 'The plugin has been deactivated successfully.'
+                'body' => 'The plugin has been deactivated successfully.',
             ],
             'import' => [
                 'title' => 'Success',
-                'body' => 'The plugin has been imported successfully.'
+                'body' => 'The plugin has been imported successfully.',
             ],
             'created' => [
                 'title' => 'Success',
-                'body' => 'The plugin has been created successfully.'
+                'body' => 'The plugin has been created successfully.',
             ],
         ],
-        'enable' => "Enable All",
-        'disable' => "Disable All",
+        'enable' => 'Enable All',
+        'disable' => 'Disable All',
     ],
     'tables' => [
         'title' => 'Tables',
@@ -93,20 +93,20 @@ return [
         'notifications' => [
             'migrated' => [
                 'title' => 'Success',
-                'body' => 'The table has been migrated successfully.'
+                'body' => 'The table has been migrated successfully.',
             ],
             'not-migrated' => [
                 'title' => 'Error',
-                'body' => 'The table could not be migrated.'
+                'body' => 'The table could not be migrated.',
             ],
             'generated' => [
                 'title' => 'Success',
-                'body' => 'The table has been generated successfully.'
+                'body' => 'The table has been generated successfully.',
             ],
             'model' => [
                 'title' => 'Error',
-                'body' => 'The model could not be found generate it first.'
-            ]
-        ]
-    ]
+                'body' => 'The model could not be found generate it first.',
+            ],
+        ],
+    ],
 ];

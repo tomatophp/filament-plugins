@@ -4,95 +4,80 @@ namespace TomatoPHP\FilamentPlugins;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Laravel\Module;
+use TomatoPHP\FilamentPlugins\Console\FilamentPageGenerate;
+use TomatoPHP\FilamentPlugins\Console\FilamentPluginsGenerate;
+use TomatoPHP\FilamentPlugins\Console\FilamentPluginsInstall;
+use TomatoPHP\FilamentPlugins\Console\FilamentPluginsModel;
+use TomatoPHP\FilamentPlugins\Console\FilamentPublishModule;
+use TomatoPHP\FilamentPlugins\Console\FilamentResourceGenerate;
 use TomatoPHP\FilamentPlugins\Console\FilamentTomatoPluginsInstaller;
-
+use TomatoPHP\FilamentPlugins\Console\FilamentTomatoPluginsList;
+use TomatoPHP\FilamentPlugins\Console\FilamentWidgetGenerate;
+use TomatoPHP\FilamentPlugins\Services\PanelPlugins;
 
 class FilamentPluginsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //Register generate command
+        // Register generate command
         $this->commands([
-           \TomatoPHP\FilamentPlugins\Console\FilamentPluginsInstall::class,
-           \TomatoPHP\FilamentPlugins\Console\FilamentPageGenerate::class,
-           \TomatoPHP\FilamentPlugins\Console\FilamentResourceGenerate::class,
-           \TomatoPHP\FilamentPlugins\Console\FilamentWidgetGenerate::class,
-           \TomatoPHP\FilamentPlugins\Console\FilamentPluginsGenerate::class,
-           \TomatoPHP\FilamentPlugins\Console\FilamentPluginsModel::class,
-           \TomatoPHP\FilamentPlugins\Console\FilamentPublishModule::class,
-            \TomatoPHP\FilamentPlugins\Console\FilamentTomatoPluginsInstaller::class,
-            \TomatoPHP\FilamentPlugins\Console\FilamentTomatoPluginsList::class
+            FilamentPluginsInstall::class,
+            FilamentPageGenerate::class,
+            FilamentResourceGenerate::class,
+            FilamentWidgetGenerate::class,
+            FilamentPluginsGenerate::class,
+            FilamentPluginsModel::class,
+            FilamentPublishModule::class,
+            FilamentTomatoPluginsInstaller::class,
+            FilamentTomatoPluginsList::class,
         ]);
 
-        //Register Config file
+        // Register Config file
         $this->mergeConfigFrom(__DIR__.'/../config/filament-plugins.php', 'filament-plugins');
 
-        //Publish Config
+        // Publish Config
         $this->publishes([
-           __DIR__.'/../config/filament-plugins.php' => config_path('filament-plugins.php'),
+            __DIR__.'/../config/filament-plugins.php' => config_path('filament-plugins.php'),
         ], 'filament-plugins-config');
 
-        //Register Migrations
+        // Register Migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        //Publish Migrations
+        // Publish Migrations
         $this->publishes([
-           __DIR__.'/../database/migrations' => database_path('migrations'),
+            __DIR__.'/../database/migrations' => database_path('migrations'),
         ], 'filament-plugins-migrations');
-        //Register views
+        // Register views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'filament-plugins');
 
-        //Publish Views
+        // Publish Views
         $this->publishes([
-           __DIR__.'/../resources/views' => resource_path('views/vendor/filament-plugins'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/filament-plugins'),
         ], 'filament-plugins-views');
 
-        //Register Langs
+        // Register Langs
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'filament-plugins');
 
-        //Publish Lang
+        // Publish Lang
         $this->publishes([
-           __DIR__.'/../resources/lang' => base_path('lang/vendor/filament-plugins'),
+            __DIR__.'/../resources/lang' => base_path('lang/vendor/filament-plugins'),
         ], 'filament-plugins-lang');
 
-        //Register Routes
+        // Register Routes
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         $this->registerModuleMacros();
 
-
-        Panel::macro('disablePlugin', function (Plugin $plugin): static
-        {
-            $this->resources = collect($this->resources)->filter(function ($item, $key) use ($plugin) {
-                $namespace = str(get_class($plugin))->explode('\\')[1];
-                return !str($item)->contains($namespace);
-            })->toArray();
-            $this->pages = collect($this->pages)->filter(function ($item, $key) use ($plugin) {
-                $namespace = str(get_class($plugin))->explode('\\')[1];
-                return !str($item)->contains($namespace);
-            })->toArray();
-            $this->widgets = collect($this->widgets)->filter(function ($item, $key) use ($plugin) {
-                $namespace = str(get_class($plugin))->explode('\\')[1];
-                return !str($item)->contains($namespace);
-            })->toArray();
-            $this->plugins = collect($this->plugins)->filter(function ($item, $key) use ($plugin) {
-                return $key !== $plugin->getId();
-            })->toArray();
-
-            return $this;
+        Panel::macro('disablePlugin', function (Plugin $plugin): Panel {
+            return PanelPlugins::disable($this, $plugin);
         });
 
     }
 
-    public function boot(): void
-    {
-
-    }
-
+    public function boot(): void {}
 
     protected function registerModuleMacros(): void
     {
@@ -115,9 +100,9 @@ class FilamentPluginsServiceProvider extends ServiceProvider
 
             $dir = File::directories($this->getPath());
             $appPath = $this->namespace($relativeNamespace);
-            if(in_array($this->getPath() . '/src', $dir)){
-                $info = json_decode(File::get($this->getPath() . '/module.json'));
-                $appPath =  str($this->namespace($relativeNamespace))->replace('Modules', str($info->providers[0])->explode('\\')->first())->toString();
+            if (in_array($this->getPath().'/src', $dir)) {
+                $info = json_decode(File::get($this->getPath().'/module.json'));
+                $appPath = str($this->namespace($relativeNamespace))->replace('Modules', str($info->providers[0])->explode('\\')->first())->toString();
             }
 
             return $appPath;
@@ -125,43 +110,42 @@ class FilamentPluginsServiceProvider extends ServiceProvider
         Module::macro('appPath', function (string $relativePath = '') {
             $dir = File::directories($this->getPath());
             $appPath = $this->getExtraPath('app');
-            if(in_array($this->getPath() . '/src', $dir)){
-                $appPath =  $this->getPath() . '/src';
+            if (in_array($this->getPath().'/src', $dir)) {
+                $appPath = $this->getPath().'/src';
             }
 
-            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
         });
 
         Module::macro('databasePath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('database');
 
-            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
         });
 
         Module::macro('resourcesPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('resources');
 
-            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
         });
 
         Module::macro('migrationsPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('migrations');
 
-            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
         });
 
         Module::macro('seedersPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('seeders');
 
-            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
         });
 
         Module::macro('factoriesPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('factories');
 
-            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
         });
 
     }
-
 }

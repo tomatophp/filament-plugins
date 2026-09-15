@@ -40,7 +40,7 @@ function processFile($filePath, &$messages)
         // Prepare the replacement string
         $replacement = "trans('filament-plugins::messages.plugins.$key')";
         // Use preg_replace to replace only the first occurrence
-        $pattern = '/' . preg_quote($match[0], '/') . '/';
+        $pattern = '/'.preg_quote($match[0], '/').'/';
         $content = preg_replace($pattern, $replacement, $content, 1);
     }
 
@@ -71,7 +71,6 @@ function saveMessagesToFile($messages, $filePath)
     $content = "<?php\n\nreturn $export;\n";
     file_put_contents($filePath, $content);
 }
-
 
 // Main logic
 $messages = [];
