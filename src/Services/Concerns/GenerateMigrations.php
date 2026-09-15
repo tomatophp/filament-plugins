@@ -2,9 +2,11 @@
 
 namespace TomatoPHP\FilamentPlugins\Services\Concerns;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 trait GenerateMigrations
 {
@@ -13,26 +15,42 @@ trait GenerateMigrations
      */
     private function generateMigrations(): void
     {
+        if (Schema::hasTable($this->tableName) && ! $this->table?->ownsDatabaseTable()) {
+            throw new RuntimeException("Refusing to drop [{$this->tableName}]: the table builder did not create this table.");
+        }
+
         $migrationsPath = module_path($this->moduleName).'/database/migrations/';
         File::ensureDirectoryExists($migrationsPath);
-        $checkIfMigrationExists = File::files($migrationsPath);
-        $migrationExists = false;
-        foreach ($checkIfMigrationExists as $migration) {
+        foreach (File::files($migrationsPath) as $migration) {
             if (Str::of($migration->getFilename())->contains('_create_'.$this->tableName.'_table')) {
                 File::delete($migration);
             }
         }
 
         Schema::dropIfExists($this->tableName);
+        $this->forgetGeneratedMigrations();
 
         $this->generateStubs(
             $this->stubPath.'migration.stub',
-            module_path($this->moduleName).'/database/migrations/'.date('Y_m_d_h_mm_ss').'_create_'.$this->tableName.'_table.php',
+            module_path($this->moduleName).'/database/migrations/'.date('Y_m_d_His').'_create_'.$this->tableName.'_table.php',
             [
                 'table' => $this->tableName,
                 'fields' => $this->getFields($this->table->tableCols()->orderBy('order')->get()),
             ],
         );
+    }
+
+    /**
+     * The owned table was dropped, so its old migration must be able to run again.
+     */
+    private function forgetGeneratedMigrations(): void
+    {
+        $config = config('database.migrations');
+        $repository = is_array($config) ? ($config['table'] ?? 'migrations') : ($config ?: 'migrations');
+
+        if (Schema::hasTable($repository)) {
+            DB::table($repository)->where('migration', 'like', '%_create_'.$this->tableName.'_table')->delete();
+        }
     }
 
     private function getFields($fields): string

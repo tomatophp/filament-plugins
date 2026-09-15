@@ -4,6 +4,10 @@ namespace TomatoPHP\FilamentPlugins\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
+use Nwidart\Modules\Facades\Module;
 use TomatoPHP\FilamentPlugins\Services\CRUDGenerator;
 
 /**
@@ -15,6 +19,7 @@ use TomatoPHP\FilamentPlugins\Services\CRUDGenerator;
  * @property bool $soft_deletes
  * @property bool $migrated
  * @property bool $generated
+ * @property Carbon|null $migrated_at
  * @property string $created_at
  * @property string $updated_at
  * @property TableCol[] $tableCols
@@ -31,20 +36,65 @@ class Table extends Model
         'soft_deletes' => 'boolean',
         'migrated' => 'boolean',
         'generated' => 'boolean',
+        'migrated_at' => 'datetime',
     ];
 
-    /**
-     * @return HasMany
-     */
-    public function tableCols()
+    public function tableCols(): HasMany
     {
-        return $this->hasMany('TomatoPHP\FilamentPlugins\Models\TableCol');
+        return $this->hasMany(TableCol::class);
     }
 
-    public function migrate()
+    /**
+     * The `*_create_{name}_table.php` migrations the builder wrote into this module.
+     *
+     * @return array<int, string>
+     */
+    public function generatedMigrationFiles(): array
     {
-        $generator = new CRUDGenerator(table: $this, migration: true);
-        $generator->generate();
+        $module = Module::find((string) $this->module);
+
+        if (! $module || blank($this->name)) {
+            return [];
+        }
+
+        return File::glob($module->getPath().'/database/migrations/*_create_'.$this->name.'_table.php') ?: [];
+    }
+
+    /**
+     * The builder owns the database table only when it migrated it itself and its migration file still exists.
+     */
+    public function ownsDatabaseTable(): bool
+    {
+        return $this->migrated_at !== null && count($this->generatedMigrationFiles()) > 0;
+    }
+
+    /**
+     * Migrating drops the database table, so it is only allowed for new tables or tables the builder owns.
+     */
+    public function canMigrate(): bool
+    {
+        return (! Schema::hasTable($this->name)) || $this->ownsDatabaseTable();
+    }
+
+    /**
+     * Drop the owned table (if any) and write a fresh migration for it.
+     *
+     * Returns false, without touching the database, when an existing table is not owned by the builder.
+     */
+    public function migrate(): bool
+    {
+        if (! $this->canMigrate()) {
+            return false;
+        }
+
+        (new CRUDGenerator(table: $this, migration: true))->generate();
+
+        $this->forceFill([
+            'migrated' => true,
+            'migrated_at' => now(),
+        ])->save();
+
+        return true;
     }
 
     public function getTable()

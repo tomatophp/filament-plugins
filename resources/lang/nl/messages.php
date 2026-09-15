@@ -89,6 +89,7 @@ return [
             'add-id' => 'Add ID Column',
             'add-timestamps' => 'Add Timestamps',
             'add-softdeletes' => 'Add Soft Deletes',
+            'migrate-description' => 'Hiermee wordt de tabel [:table] met al haar rijen uit de database verwijderd en wordt het migratiebestand opnieuw aangemaakt. Doorgaan?',
         ],
         'notifications' => [
             'migrated' => [
@@ -107,6 +108,14 @@ return [
                 'title' => 'Error',
                 'body' => 'The model could not be found generate it first.',
             ],
+            'not-owned' => [
+                'title' => 'Tabel niet gemigreerd',
+                'body' => 'De tabel [:table] bestaat al in de database en is niet door de tabelbouwer gemaakt, dus er is niets gewijzigd.',
+            ],
+        ],
+        'validation' => [
+            'name-format' => 'Gebruik snake_case: kleine letters, cijfers en underscores, beginnend met een letter.',
+            'name-exists' => 'De tabel [:table] bestaat al in de database.',
         ],
     ],
 ];

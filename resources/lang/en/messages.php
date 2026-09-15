@@ -92,6 +92,7 @@ return [
             'add-id' => 'Add ID Column',
             'add-timestamps' => 'Add Timestamps',
             'add-softdeletes' => 'Add Soft Deletes',
+            'migrate-description' => 'This drops the [:table] table from the database, deleting all of its rows, and recreates its migration file. Continue?',
         ],
         'notifications' => [
             'migrated' => [
@@ -110,6 +111,14 @@ return [
                 'title' => 'Error',
                 'body' => 'The model could not be found generate it first.',
             ],
+            'not-owned' => [
+                'title' => 'Table not migrated',
+                'body' => 'The [:table] table already exists in the database and was not created by the table builder, so it was left untouched.',
+            ],
+        ],
+        'validation' => [
+            'name-format' => 'Use snake_case: lowercase letters, numbers and underscores, starting with a letter.',
+            'name-exists' => 'The [:table] table already exists in the database.',
         ],
     ],
 ];

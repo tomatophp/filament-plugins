@@ -197,6 +197,8 @@ Everything is allowed by default (same as the `filament-plugins.php` config file
 )
 ```
 
+The "Create Migration" action drops and recreates the table, so it only ever touches tables the builder created itself: the table row gets a `migrated_at` timestamp when it is migrated and the module must still contain the generated `*_create_{table}_table.php` migration. If a table with the same name already exists and the builder does not own it, nothing is dropped and a notification explains why. Table names must be snake_case (`^[a-z][a-z0-9_]*$`, max 64 characters), unique in the builder and must not match an existing database table. Run `php artisan migrate` after upgrading to add the `migrated_at` column.
+
 Each option falls back to the matching config key (`allow_create`, `allow_upload`, `allow_toggle`, `allow_destroy`, `allow_generator`) when you don't call it.
 
 ## Stop Using Plugins UI

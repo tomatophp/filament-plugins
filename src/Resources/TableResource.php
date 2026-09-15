@@ -3,6 +3,7 @@
 namespace TomatoPHP\FilamentPlugins\Resources;
 
 use BackedEnum;
+use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -62,7 +63,25 @@ class TableResource extends Resource
                     ->label(trans('filament-plugins::messages.tables.form.name'))
                     ->columnSpan(2)
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(64)
+                    ->regex('/^[a-z][a-z0-9_]*$/')
+                    ->unique(ignoreRecord: true)
+                    ->rules([
+                        fn (?TableModel $record): Closure => function (string $attribute, mixed $value, Closure $fail) use ($record): void {
+                            if (! is_string($value) || ! DatabaseSchema::hasTable($value)) {
+                                return;
+                            }
+
+                            if ($record && $record->name === $value && $record->ownsDatabaseTable()) {
+                                return;
+                            }
+
+                            $fail(trans('filament-plugins::messages.tables.validation.name-exists', ['table' => $value]));
+                        },
+                    ])
+                    ->validationMessages([
+                        'regex' => trans('filament-plugins::messages.tables.validation.name-format'),
+                    ]),
                 Toggle::make('timestamps')
                     ->label(trans('filament-plugins::messages.tables.form.timestamps'))
                     ->default(true),
@@ -106,12 +125,23 @@ class TableResource extends Resource
                     ->iconButton(),
                 Action::make('migrate')
                     ->requiresConfirmation()
+                    ->modalHeading(trans('filament-plugins::messages.tables.actions.migrate'))
+                    ->modalDescription(fn (TableModel $record): string => trans('filament-plugins::messages.tables.actions.migrate-description', ['table' => $record->name]))
                     ->tooltip(trans('filament-plugins::messages.tables.actions.migrate'))
                     ->color('info')
                     ->iconButton()
                     ->icon('heroicon-s-circle-stack')
                     ->action(function (TableModel $record) {
-                        $record->migrate();
+                        if (! $record->migrate()) {
+                            Notification::make()
+                                ->title(trans('filament-plugins::messages.tables.notifications.not-owned.title'))
+                                ->body(trans('filament-plugins::messages.tables.notifications.not-owned.body', ['table' => $record->name]))
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
                         Notification::make()
                             ->title(trans('filament-plugins::messages.tables.notifications.migrated.title'))
                             ->body(trans('filament-plugins::messages.tables.notifications.migrated.body'))
