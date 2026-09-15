@@ -1,0 +1,16 @@
+{
+    "name": "Alpha",
+    "alias": "alpha",
+    "title": {
+        "en": "Alpha Package"
+    },
+    "description": {
+        "en": "A vendor package that ships a module.json, like every TomatoPHP package"
+    },
+    "providers": [],
+    "type": "lib",
+    "color": "#007dff",
+    "icon": "heroicon-o-cube",
+    "placeholder": "placeholder.webp",
+    "version": "v1.0"
+}

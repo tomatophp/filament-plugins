@@ -1,0 +1,66 @@
+/*
+ * tomatophp/filament-plugins
+ *
+ * Filament v5 panels only ship the utilities Filament itself uses, so the plugin cards on the
+ * Plugins page bring the few utilities they need.
+ *
+ * The rules are deliberately not wrapped in a cascade layer: this file loads before Filament's app.css,
+ * so a layer declared here would rank below Filament's own layers and its reset would win.
+ * Colors come from Filament's CSS variables. Responsive variants come last, in ascending breakpoint order.
+ */
+.flex { display: flex; }
+.grid { display: grid; }
+.flex-col { flex-direction: column; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.items-center { align-items: center; }
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+
+.w-12 { width: 3rem; }
+.w-32 { width: 8rem; }
+.w-full { width: 100%; }
+.h-5 { height: 1.25rem; }
+.h-16 { height: 4rem; }
+.h-30 { height: 7.5rem; }
+.h-40 { height: 10rem; }
+.h-full { height: 100%; }
+
+.p-4 { padding: 1rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.pt-4 { padding-top: 1rem; }
+.my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+.my-4 { margin-top: 1rem; margin-bottom: 1rem; }
+.mt-3 { margin-top: 0.75rem; }
+
+.overflow-hidden { overflow: hidden; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.border { border-width: 1px; border-style: solid; }
+.border-t { border-top-width: 1px; border-top-style: solid; }
+.border-gray-100 { border-color: var(--gray-100); }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-t-lg { border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; }
+.shadow-sm { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); }
+
+.bg-white { background-color: #fff; }
+.bg-cover { background-size: cover; }
+.bg-center { background-position: center; }
+
+.font-bold { font-weight: 700; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-white { color: #fff; }
+.text-gray-600 { color: var(--gray-600); }
+
+:where(.dark, .dark *) .dark\:bg-gray-800 { background-color: var(--gray-800); }
+:where(.dark, .dark *) .dark\:border-gray-700 { border-color: var(--gray-700); }
+:where(.dark, .dark *) .dark\:text-gray-300 { color: var(--gray-300); }
+
+@media (min-width: 48rem) {
+    .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

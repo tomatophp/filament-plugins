@@ -3,6 +3,7 @@
 namespace TomatoPHP\FilamentPlugins\Services;
 
 use Illuminate\Support\Facades\File;
+use Nwidart\Modules\Facades\Module as Modules;
 use Nwidart\Modules\Module;
 
 class ModulePaths
@@ -15,6 +16,46 @@ class ModulePaths
         $path = rtrim((string) config('modules.paths.modules', base_path('Modules')), '/\\');
 
         return $path.($relativePath !== '' ? DIRECTORY_SEPARATOR.ltrim($relativePath, '/\\') : '');
+    }
+
+    /**
+     * A module this package manages: it lives in the modules folder and is not a vendor library.
+     *
+     * With `modules.scan` enabled every TomatoPHP package in vendor/ (they all ship a module.json of
+     * type `lib`) is also an nwidart module. Those are never enabled or disabled from the Plugins page.
+     */
+    public static function isManaged(Module $module): bool
+    {
+        $path = static::normalize($module->getPath());
+        $root = static::normalize(static::modulesPath());
+
+        if (! str_starts_with($path.'/', $root.'/')) {
+            return false;
+        }
+
+        $file = $module->getPath().DIRECTORY_SEPARATOR.'module.json';
+        $info = File::exists($file) ? json_decode((string) File::get($file)) : null;
+
+        return ($info->type ?? null) !== 'lib';
+    }
+
+    /**
+     * The managed module whose namespace holds the given class, if any.
+     */
+    public static function moduleForClass(string $class): ?Module
+    {
+        foreach (Modules::all() as $module) {
+            if (static::isManaged($module) && str_starts_with($class, static::appNamespace($module).'\\')) {
+                return $module;
+            }
+        }
+
+        return null;
+    }
+
+    protected static function normalize(string $path): string
+    {
+        return rtrim(str_replace('\\', '/', $path), '/');
     }
 
     public static function usesSourceFolder(Module $module): bool

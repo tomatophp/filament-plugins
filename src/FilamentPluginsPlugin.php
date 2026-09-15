@@ -12,6 +12,8 @@ use Throwable;
 use TomatoPHP\FilamentPlugins\Models\Plugin as PluginModel;
 use TomatoPHP\FilamentPlugins\Pages\Plugins;
 use TomatoPHP\FilamentPlugins\Resources\TableResource;
+use TomatoPHP\FilamentPlugins\Services\ModulePaths;
+use TomatoPHP\FilamentPlugins\Services\PanelPlugins;
 
 class FilamentPluginsPlugin implements Plugin
 {
@@ -128,10 +130,17 @@ class FilamentPluginsPlugin implements Plugin
             }
         }
 
+        // Only plugins that live inside a disabled module managed from the Plugins page are removed.
+        // Vendor packages (scanned module.json of type `lib`) and every other plugin stay untouched.
         foreach ($panel->getPlugins() as $modulePlugin) {
-            $module = Module::find(str(get_class($modulePlugin))->explode('\\')[1] ?? '');
+            if ($modulePlugin === $this) {
+                continue;
+            }
+
+            $module = ModulePaths::moduleForClass(get_class($modulePlugin));
+
             if ($module && ! $module->isEnabled()) {
-                $panel->disablePlugin($modulePlugin);
+                PanelPlugins::disable($panel, $modulePlugin, ModulePaths::appNamespace($module));
             }
         }
     }

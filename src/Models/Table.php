@@ -2,12 +2,14 @@
 
 namespace TomatoPHP\FilamentPlugins\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Nwidart\Modules\Facades\Module;
+use TomatoPHP\FilamentPlugins\Database\Factories\TableFactory;
 use TomatoPHP\FilamentPlugins\Services\CRUDGenerator;
 
 /**
@@ -26,6 +28,13 @@ use TomatoPHP\FilamentPlugins\Services\CRUDGenerator;
  */
 class Table extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory(): TableFactory
+    {
+        return TableFactory::new();
+    }
+
     /**
      * @var array
      */

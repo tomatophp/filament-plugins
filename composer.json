@@ -15,13 +15,16 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "TomatoPHP\\FilamentPlugins\\": "src/"
+            "TomatoPHP\\FilamentPlugins\\": "src/",
+            "TomatoPHP\\FilamentPlugins\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "TomatoPHP\\FilamentPlugins\\Tests\\": "tests/src/",
-            "TomatoPHP\\FilamentPlugins\\Tests\\Database\\Factories\\": "tests/database/factories"
+            "TomatoPHP\\FilamentPlugins\\Tests\\Database\\Factories\\": "tests/database/factories",
+            "Acme\\": "tests/fixtures/src/Acme/",
+            "Modules\\Gamma\\": "tests/fixtures/src/Gamma/"
         }
     },
     "extra": {

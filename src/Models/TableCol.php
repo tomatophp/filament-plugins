@@ -2,8 +2,10 @@
 
 namespace TomatoPHP\FilamentPlugins\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use TomatoPHP\FilamentPlugins\Database\Factories\TableColFactory;
 
 /**
  * @property int $id
@@ -30,6 +32,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class TableCol extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory(): TableColFactory
+    {
+        return TableColFactory::new();
+    }
+
     /**
      * @var array
      */

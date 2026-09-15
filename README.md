@@ -25,8 +25,17 @@ Manage your modules as a plugin system with plugin generator
 
 ## Installation
 
+`nwidart/laravel-modules` v13 pulls in `wikimedia/composer-merge-plugin`, which Composer blocks by default, so allow it first:
+
 ```bash
+composer config allow-plugins.wikimedia/composer-merge-plugin true
 composer require tomatophp/filament-plugins:^5.0
+```
+
+The plugin cards ship their own stylesheet (Filament v5 panels only compile Filament's own utilities); publish it after installing or updating:
+
+```bash
+php artisan filament:assets
 ```
 after install your package please run this command
 

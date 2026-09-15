@@ -4,6 +4,8 @@ namespace TomatoPHP\FilamentPlugins;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Laravel\Module;
@@ -77,7 +79,13 @@ class FilamentPluginsServiceProvider extends ServiceProvider
 
     }
 
-    public function boot(): void {}
+    public function boot(): void
+    {
+        // Filament v5 panels only compile Filament's own utilities, so the plugin cards ship theirs.
+        FilamentAsset::register([
+            Css::make('filament-plugins', __DIR__.'/../resources/dist/filament-plugins.css'),
+        ], 'tomatophp/filament-plugins');
+    }
 
     protected function registerModuleMacros(): void
     {

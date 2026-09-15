@@ -20,6 +20,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Livewire\LivewireServiceProvider;
 use Nwidart\Modules\Activators\FileActivator;
+use Nwidart\Modules\Contracts\ActivatorInterface;
 use Nwidart\Modules\LaravelModulesServiceProvider;
 use Orchestra\Testbench\Attributes\WithEnv;
 use Orchestra\Testbench\Concerns\WithWorkbench;
@@ -52,6 +53,11 @@ abstract class TestCase extends BaseTestCase
         $files->ensureDirectoryExists(static::modulesPath());
 
         parent::setUp();
+
+        // The file activator reads its statuses file once, before the test config is applied;
+        // rebuild it so enabling / disabling modules writes into the temporary folder, not vendor/.
+        $this->app->forgetInstance(ActivatorInterface::class);
+        $this->app->singleton(ActivatorInterface::class, fn ($app) => new FileActivator($app));
     }
 
     protected function tearDown(): void
@@ -120,6 +126,7 @@ abstract class TestCase extends BaseTestCase
             FilamentIconsServiceProvider::class,
             FilamentPluginsServiceProvider::class,
             AdminPanelProvider::class,
+            CrowdedPanelProvider::class,
         ];
 
         sort($providers);
@@ -142,9 +149,15 @@ abstract class TestCase extends BaseTestCase
             $config->set('auth.providers.testing.driver', 'eloquent');
             $config->set('auth.providers.testing.model', User::class);
 
+            // nwidart's FileActivator caches module statuses; keep that cache per test, not on disk.
+            $config->set('cache.default', 'array');
+
             $config->set('modules.namespace', 'Modules');
             $config->set('modules.paths.modules', static::modulesPath());
-            $config->set('modules.scan.enabled', false);
+            // Like a real app after `filament-plugins:install`: vendor packages that ship a module.json
+            // (tests/fixtures/vendor/acme/*) are scanned as nwidart modules that are never enabled.
+            $config->set('modules.scan.enabled', true);
+            $config->set('modules.scan.paths', [dirname(__DIR__).'/fixtures/vendor/*/*']);
             $config->set('modules.cache.enabled', false);
             $config->set('modules.activator', 'file');
             $config->set('modules.activators.file', [
