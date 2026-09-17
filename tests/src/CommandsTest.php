@@ -29,6 +29,33 @@ it('runs the install command', function () {
     File::delete(config_path('modules.php'));
 });
 
+it('clears instead of builds the filament component cache on install', function () {
+    // `filament:optimize` froze the panel components at install time, so every plugin registered
+    // afterwards disappeared from the panel until the cache was cleared by hand.
+    $ran = new ArrayObject;
+
+    app()->bind(FilamentPluginsInstall::class, fn () => new class($ran) extends FilamentPluginsInstall
+    {
+        public function __construct(private ArrayObject $ran)
+        {
+            parent::__construct();
+        }
+
+        public function artisanCommand(array $command, ?bool $withOutput = false): void
+        {
+            $this->ran[] = implode(' ', $command);
+        }
+    });
+
+    artisan('filament-plugins:install')->assertSuccessful();
+
+    expect($ran->getArrayCopy())
+        ->toContain('filament:optimize-clear')
+        ->not->toContain('filament:optimize');
+
+    File::delete(config_path('modules.php'));
+});
+
 it('lists the TomatoPHP plugins', function () {
     artisan('filament-plugins:list')
         ->expectsOutputToContain('User Manager')

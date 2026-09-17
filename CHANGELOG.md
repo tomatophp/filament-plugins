@@ -9,6 +9,7 @@
 - New plugin options to lock down file-writing features: `allowCreate()`, `allowImport()`, `allowToggle()`, `allowDestroy()`, `allowGenerator()`.
 - The table builder's migrate action only drops tables it created itself (tracked with a new `migrated_at` column plus the module's own migration file); an existing table it does not own is left untouched and a notification explains why. Table names must be snake_case, unique and must not match an existing database table.
 - Registering the plugin no longer removes other plugins from the panel: only plugins inside a disabled module from the modules folder are disabled, and only their own classes are removed. Vendor packages that ship a `module.json` (all TomatoPHP packages) are never touched.
+- `filament-plugins:install` and the TomatoPHP plugin installer clear the Filament component cache (`filament:optimize-clear`) instead of building it; the cached list hid every plugin registered after install.
 - Ship `Table` and `TableCol` factories (`TomatoPHP\FilamentPlugins\Database\Factories`).
 - Ship `resources/dist/filament-plugins.css` with the utilities the plugin cards use; run `php artisan filament:assets` after updating.
 - `filament-plugins:model` works on every database driver (it no longer runs `SHOW TABLES`).

@@ -17,11 +17,10 @@ Manage your modules as a plugin system with plugin generator
 
 ## Screenshots
 
-![Plugins](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/plugins.png)
-![Tables](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/tables.png)
-![Generate](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/generate.png)
-![Create Col](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/create-col.png)
-![Table cols](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/table-cols.png)
+![Plugins](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/plugins-light.png)
+![Plugins Dark](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/plugins-dark.png)
+![Table Builder](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/edit-table-light.png)
+![Table Builder Dark](https://raw.githubusercontent.com/tomatophp/filament-plugins/master/arts/edit-table-dark.png)
 
 ## Installation
 

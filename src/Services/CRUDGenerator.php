@@ -35,34 +35,33 @@ class CRUDGenerator
 
     use GenerateCols;
     use GenerateController;
-
     use GenerateCreateView;
     use GenerateEditView;
+
     // Generate Classes
     use GenerateFolders;
+
     // Generate From & View
     use GenerateForm;
     use GenerateFormView;
+
     // Generate Views
     use GenerateIndexView;
     use GenerateJsonResource;
     use GenerateMenus;
     use GenerateMigrations;
     use GenerateModel;
-
     use GenerateRequest;
-
     use GenerateRoutes;
     use GenerateRules;
     use GenerateShowView;
     use GenerateTable;
+
     // Handler
     use HandleStub;
     use InjectString;
 
     /**
-     * @param  string  $tableName
-     *
      * @throws Exception
      */
     public function __construct(

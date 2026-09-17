@@ -95,11 +95,11 @@ class Plugin
         info('Installing '.$this->label.' ...');
         $this->requireComposerPackages($this->command);
         $this->artisanCommand([$this->key.':install']);
-        $this->artisanCommand(['filament:optimize']);
+        $this->artisanCommand(['filament:optimize-clear']);
         if (! empty($this->instractions)) {
             warning('finally reigster the plugin on "/app/Providers/Filament/AdminPanelProvider.php" using this code');
             warning($this->instractions);
-            warning('then run "php artisan filament:optimize" and check your plugins in /admin/plugins and enable it');
+            warning('then run "php artisan filament:optimize-clear" and check your plugins in /admin/plugins and enable it');
         }
         info($this->label.' installed successfully');
         info('====================================');

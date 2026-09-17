@@ -2,6 +2,7 @@
     "name": "tomatophp/filament-plugins",
     "type": "library",
     "description": "Manage your modules as a plugin system with plugin generator",
+    "homepage": "https://tomatophp.com/en/plugins/filament-plugins",
     "keywords": [
         "php",
         "laravel",

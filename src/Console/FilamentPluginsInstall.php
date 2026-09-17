@@ -40,7 +40,7 @@ class FilamentPluginsInstall extends Command
         $this->info('Publish Vendor Assets');
         $this->artisanCommand(['migrate']);
         $this->copyFile(__DIR__.'/../../publish/modules.php', config_path('modules.php'));
-        $this->artisanCommand(['filament:optimize']);
+        $this->artisanCommand(['filament:optimize-clear']);
         $this->info('Filament Plugins installed successfully.');
     }
 }
